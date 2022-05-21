@@ -42,6 +42,7 @@ public class ProfileController {
 		changeNameButton();
 		changePhotoButton();
 		changeClinicNameButton();
+		changeAddressButton();
 	}
 
 	private void getName() {
@@ -53,7 +54,7 @@ public class ProfileController {
 	}
 
 	private void getAddress() {
-		ProfileView.addressLabel.setText(Database.getClinicAddress(LoginController.loggedInEmail));
+		ProfileView.addressLabel.setText(Database.getClinicAddress((LoginController.loggedInEmail)));
 	}
 
 	private void getClinicName() {
@@ -193,6 +194,24 @@ public class ProfileController {
 		}
 	}
 
+	private void changeAddressButton() {
+		ProfileView.changeAddressButton.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				String address = JOptionPane.showInputDialog("Insert new clinic address");
+				if (address.equals("")) {
+					JOptionPane.showMessageDialog(null, "Clinic address can not be empty", "Alert",
+							JOptionPane.ERROR_MESSAGE);
+				} else {
+					Database.updateClinicAddress(LoginController.loggedInEmail, address);
+					JOptionPane.showMessageDialog(null, "Clinic Address change successfully",
+							"Clinic Name has been succesfully changed", JOptionPane.INFORMATION_MESSAGE);
+					ProfileView.addressLabel.setText(Database.getClinicAddress(LoginController.loggedInEmail));
+
+				}
+			}
+		});
+	}
+
 	private void changePhotoButton() {
 		ProfileView.changePhotoButton.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
@@ -200,21 +219,11 @@ public class ProfileController {
 				fileChooser.showSaveDialog(null);
 				photoPath = fileChooser.getSelectedFile().getAbsolutePath();
 				System.out.println(photoPath);
-				ProfileView.profilePhoto.setIcon(resizeImageIcon(new ImageIcon((photoPath))));
-				DoctorView.docPhoto.setIcon(resizeImageIcon(new ImageIcon((photoPath))));
+				ProfileView.profilePhoto.setIcon(DoctorController.resizeImageIcon(new ImageIcon((photoPath))));
+				DoctorView.docPhoto.setIcon(DoctorController.resizeImageIcon(new ImageIcon((photoPath))));
 				Database.updateProfilePhotoPath(LoginController.loggedInEmail, photoPath);
 			}
 		});
-	}
-
-	public static ImageIcon resizeImageIcon(ImageIcon imageIcon) {
-		BufferedImage bufferedImage = new BufferedImage(250, 180, BufferedImage.TRANSLUCENT);
-
-		Graphics2D graphics2D = bufferedImage.createGraphics();
-		graphics2D.drawImage(imageIcon.getImage(), 0, 0, 250, 180, null);
-		graphics2D.dispose();
-
-		return new ImageIcon(bufferedImage, imageIcon.getDescription());
 	}
 
 }

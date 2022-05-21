@@ -2,17 +2,25 @@ package email;
 
 import java.util.Properties;
 
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.activation.FileDataSource;
 import javax.mail.Authenticator;
 import javax.mail.Message;
 import javax.mail.MessagingException;
+import javax.mail.Multipart;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 
 import database.Database;
+import document.WordDocument;
 import view.NewPacientView;
+import view.PacientDetailView;
 
 public class Email {
 
@@ -61,6 +69,11 @@ public class Email {
 				Message newPacientEmail = newPacientEmail(session, myAccountEmail, recepient);
 				Transport.send(newPacientEmail);
 				break;
+			case 5:
+				Message testResultsEmail = testResultsEmail(session, myAccountEmail, recepient);
+				Transport.send(testResultsEmail);
+				break;
+
 			}
 		} catch (MessagingException e) {
 			e.printStackTrace();
@@ -128,13 +141,41 @@ public class Email {
 			message.setFrom(new InternetAddress(myAccountEmail));
 			message.setRecipient(Message.RecipientType.TO, new InternetAddress(recepient));
 			message.setSubject("New Account");
-			message.setText("Welcome " + NewPacientView.firstNameIn.getText() + " " + NewPacientView.lastNameIn.getText() + ",\n"
-					+ "Your confirmation code is: " + Database.getActivationCode(recepient)
+			message.setText("Welcome " + NewPacientView.firstNameIn.getText() + " "
+					+ NewPacientView.lastNameIn.getText() + ",\n" + "Your confirmation code is: "
+					+ Database.getActivationCode(recepient)
 					+ "\nThe confirmation code will be required next time you login\n"
 					+ "We will ask for it just once in order to activate your account."
 					+ "\nIn order to login you need to use your email as Username and First Name + Last Name as your password"
 					+ "\nThe first time you login you will be asked to change your pasword with a custom one."
 					+ "\n\nThank you!\nHave a nice day!" + "\nClinica Doctoria team");
+			return message;
+
+		} catch (MessagingException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	private static Message testResultsEmail(Session session, String myAccountEmail, String recepient) {
+		Message message = new MimeMessage(session);
+		try {
+			message.setFrom(new InternetAddress(myAccountEmail));
+			message.setRecipient(Message.RecipientType.TO, new InternetAddress(recepient));
+			message.setSubject("Test Results");
+			message.setText("Hello, " + PacientDetailView.firstNameIn.getText() + " "
+					+ PacientDetailView.lastNameIn.getText() + ",\n"
+					+ "You can find your test results attached in this email.\nHave a nice day\nClinica Doctoria team");
+			MimeBodyPart attachment = new MimeBodyPart();
+			String filename = WordDocument.path + WordDocument.name + ".pdf";
+			DataSource source = new FileDataSource(filename);
+			attachment.setDataHandler(new DataHandler(source));
+			attachment.setFileName(WordDocument.name + ".pdf");
+
+			Multipart multipart = new MimeMultipart();
+			multipart.addBodyPart(attachment);
+			message.setContent(multipart);
+
 			return message;
 
 		} catch (MessagingException e) {

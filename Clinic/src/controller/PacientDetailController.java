@@ -4,10 +4,16 @@ import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileSystemView;
 
 import database.Database;
+import document.WordDocument;
+import email.Email;
 import model.MedicalResults;
 import model.Pacient;
 import view.PacientDetailView;
@@ -18,14 +24,29 @@ public class PacientDetailController {
 
 	private static final DecimalFormat df = new DecimalFormat("0.00");
 
+	public static String pacientData[][] = new String[12][4];
+
+	public static String fileName;
+
+	public static JFileChooser fileChooser = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+
 	public PacientDetailController() {
+
+		for (int i = 0; i < pacientData.length; i++) {
+			for (int j = 0; j < pacientData[i].length; j++) {
+				pacientData[i][j] = new String();
+			}
+		}
+
 		autocompletePersonalDetailsField();
 		autocompleteMedicalResults();
-		saveDataButton();
 		colorWrongValues();
+		saveDataButton();
+		downloadTestResults();
+
 	}
 
-	private void autocompletePersonalDetailsField() {
+	public static void autocompletePersonalDetailsField() {
 		Pacient selectedPacient = Database.getPacientDetails(PacientController.cnp);
 		PacientDetailView.firstNameIn.setText(selectedPacient.getFirstName());
 		PacientDetailView.lastNameIn.setText(selectedPacient.getLastName());
@@ -36,7 +57,7 @@ public class PacientDetailController {
 		PacientDetailView.phoneNumberIn.setText(selectedPacient.getPhoneNumber());
 	}
 
-	private void autocompleteMedicalResults() {
+	public static void autocompleteMedicalResults() {
 		MedicalResults medicalResults = Database.getMedicalResults(PacientController.cnp);
 		PacientDetailView.TAIn.setText(medicalResults.getTa());
 		PacientDetailView.AVIn.setText(medicalResults.getAv());
@@ -74,6 +95,7 @@ public class PacientDetailController {
 						PacientDetailView.creatinineIn.getText(), PacientDetailView.microalbuminuriaIn.getText(),
 						PacientDetailView.urinaryProteinIn.getText(), PacientDetailView.urinaryCreatinineIn.getText(),
 						PacientDetailView.riskFactorIn.getText()));
+				System.out.println(PacientDetailView.sodiumIn.getText());
 				colorWrongValues();
 				JOptionPane.showMessageDialog(null, "Data has been changed successfully", "Data changed Successfully",
 						JOptionPane.INFORMATION_MESSAGE);
@@ -82,45 +104,74 @@ public class PacientDetailController {
 		});
 	}
 
+	private String getCurrentDateAndTime() {
+		SimpleDateFormat dateFormatter = new SimpleDateFormat("ddMMyyyy");
+		SimpleDateFormat hourFormatter = new SimpleDateFormat("HHmmss");
+		Date date = new Date();
+
+		return dateFormatter.format(date) + "_" + hourFormatter.format(date);
+
+	}
+
+	private void downloadTestResults() {
+		PacientDetailView.downloadPDFButton.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+				fileChooser.showSaveDialog(null);
+				WordDocument.name = PacientDetailView.firstNameIn.getText() + "_"
+						+ PacientDetailView.lastNameIn.getText() + "_" + getCurrentDateAndTime();
+				Database.getTestResults();
+				Database.getDoctorDetailsForWordDocument(LoginController.loggedInEmail);
+				Database.getPacientDetailsForWordDocument(PacientController.cnp);
+				Database.getBasicTestResults(PacientController.cnp);
+				Database.getFullTestResults(PacientController.cnp);
+
+				new WordDocument();
+
+				Email.index = 5;
+				Email.email[Email.position].start();
+			}
+		});
+	}
+
 	private double computeImc(double height, double weight) {
 		return weight / Math.pow(height, 2);
 	}
 
-	private void colorWrongValues() {
+	public static void colorWrongValues() {
 		try {
-			System.out.println("Color");
 
 			if (Double.parseDouble(PacientDetailView.IMCIn.getText()) >= 25) {
 				PacientDetailView.IMCIn.setBackground(Color.red);
 			} else {
 				PacientDetailView.IMCIn.setBackground(Color.white);
 			}
-			if (Double.parseDouble(PacientDetailView.glucoseIn.getText()) < 70
-					|| Double.parseDouble(PacientDetailView.glucoseIn.getText()) > 105) {
+			if (Double.parseDouble(PacientDetailView.glucoseIn.getText()) <= 70
+					|| Double.parseDouble(PacientDetailView.glucoseIn.getText()) >= 105) {
 				PacientDetailView.glucoseIn.setBackground(Color.red);
 			} else {
 				PacientDetailView.glucoseIn.setBackground(Color.white);
 			}
 
-			if (Double.parseDouble(PacientDetailView.cholesterolIn.getText()) > 200) {
+			if (Double.parseDouble(PacientDetailView.cholesterolIn.getText()) >= 200) {
 				PacientDetailView.cholesterolIn.setBackground(Color.red);
 			} else {
 				PacientDetailView.cholesterolIn.setBackground(Color.white);
 			}
 
-			if (Double.parseDouble(PacientDetailView.LDLCIn.getText()) > 100) {
+			if (Double.parseDouble(PacientDetailView.LDLCIn.getText()) >= 100) {
 				PacientDetailView.LDLCIn.setBackground(Color.red);
 			} else {
 				PacientDetailView.LDLCIn.setBackground(Color.white);
 			}
 
-			if (Double.parseDouble(PacientDetailView.HDLCIn.getText()) < 60) {
+			if (Double.parseDouble(PacientDetailView.HDLCIn.getText()) <= 60) {
 				PacientDetailView.HDLCIn.setBackground(Color.red);
 			} else {
 				PacientDetailView.HDLCIn.setBackground(Color.white);
 			}
 
-			if (Double.parseDouble(PacientDetailView.trigliceridesIn.getText()) > 150) {
+			if (Double.parseDouble(PacientDetailView.trigliceridesIn.getText()) >= 150) {
 				PacientDetailView.trigliceridesIn.setBackground(Color.red);
 			} else {
 				PacientDetailView.trigliceridesIn.setBackground(Color.white);
@@ -140,7 +191,7 @@ public class PacientDetailController {
 				PacientDetailView.sodiumIn.setBackground(Color.white);
 			}
 
-			if (Double.parseDouble(PacientDetailView.uricAcidIn.getText()) > 7) {
+			if (Double.parseDouble(PacientDetailView.uricAcidIn.getText()) >= 7) {
 				PacientDetailView.uricAcidIn.setBackground(Color.red);
 			} else {
 				PacientDetailView.uricAcidIn.setBackground(Color.white);

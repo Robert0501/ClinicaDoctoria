@@ -124,17 +124,28 @@ public class NewPacientController {
 				NewPacientView.emailIn.getText(), NewPacientView.phoneNumberIn.getText(),
 				NewPacientView.countryIn.getText(), NewPacientView.addressIn.getText());
 
-		Database.insertIntoMedicalTestTable("-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-",
-				"-", "-", "-", "-", NewPacientView.cnpIn.getText());
+		Database.insertIntoMedicalTestTable("0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0",
+				"0", "0", "0", "0", NewPacientView.cnpIn.getText());
 	}
 
 	private void createNewUser() {
 		User user = new User(NewPacientView.emailIn.getText(),
 				NewPacientView.firstNameIn.getText() + NewPacientView.lastNameIn.getText(),
 				Code.generateActivationCode());
-		Database.insertIntoUserTable(user);
+		Database.insertIntoUserTable(user, false);
 		Email.index = 4;
 		Email.email[Email.position].start();
+	}
+
+	private void clearFields() {
+		NewPacientView.firstNameIn.setText("");
+		NewPacientView.lastNameIn.setText("");
+		NewPacientView.cnpIn.setText("");
+		NewPacientView.dateOfBirthIn.setText("");
+		NewPacientView.emailIn.setText("");
+		NewPacientView.phoneNumberIn.setText("");
+		NewPacientView.countryIn.setText("");
+		NewPacientView.addressIn.setText("");
 	}
 
 	private void addNewPacientButton() {
@@ -160,6 +171,7 @@ public class NewPacientController {
 													+ NewPacientView.lastNameIn.getText() + " was successfully added",
 											"Pacient successfully added", JOptionPane.INFORMATION_MESSAGE);
 									NewPacientView.newPacientFrame.setVisible(false);
+									clearFields();
 								}
 							}
 

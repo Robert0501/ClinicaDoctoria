@@ -56,6 +56,7 @@ public class PacientView {
 	}
 
 	private void pacientPanel() {
+		System.out.println("Am intrat");
 		pacientPanel = new JPanel();
 		pacientPanel.setLayout(new FlowLayout());
 		pacientPanel.setVisible(false);

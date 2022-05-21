@@ -10,7 +10,7 @@ import javax.swing.JOptionPane;
 import database.Database;
 import email.Email;
 import helper.Code;
-import model.Address;
+import helper.ViewClass;
 import model.Doctor;
 import model.User;
 import regex.RegEx;
@@ -66,15 +66,14 @@ public class RegisterController {
 
 	private void successfullyAddressRegistered() {
 		if (checkAddressRegister()) {
-			AddressRegisterView.addressRegisterFrame.setVisible(false);
 			addDoctorToDatabase();
-			Database.insertIntoAddressTable(AddressRegisterView.getClinicNameIn(),
-					new Address(AddressRegisterView.getCountryIn(), AddressRegisterView.getCityIn(),
-							AddressRegisterView.getStreetIn(), AddressRegisterView.getAddressIn()),
-					RegisterView.getEmail());
+			addUserToDatabase();
+			Email.index = 1;
+			Email.email[Email.position].start();
 			JOptionPane.showMessageDialog(null,
 					"You have been successfully registered. Check your email for the confirmation code.\nNext time you will login, the code will be required.",
 					"Register Successfully", JOptionPane.INFORMATION_MESSAGE);
+			AddressRegisterView.addressRegisterFrame.setVisible(false);
 			LoginView.setVisibility(true);
 			setAllFieldsToEmpty();
 		}
@@ -82,14 +81,15 @@ public class RegisterController {
 
 	private void succesffullyRegistered() {
 		if (checkRegister()) {
-			addUserToDatabase();
-			Email.index = 1;
-			Email.email[Email.position].start();
 
 			RegisterView.registerFrame.dispose();
-			new AddressRegisterView();
+			if (!ViewClass.addressRegisterView) {
+				new AddressRegisterView();
+				ViewClass.addressRegisterView = true;
+			} else {
+				AddressRegisterView.addressRegisterFrame.setVisible(true);
+			}
 			addressRegisterButton();
-			// LoginView.setVisibility(true);
 
 		}
 	}
@@ -172,12 +172,14 @@ public class RegisterController {
 	}
 
 	private void addDoctorToDatabase() {
+		String address = AddressRegisterView.getCountryIn() + " " + AddressRegisterView.getCityIn() + " "
+				+ AddressRegisterView.getStreetIn() + " " + AddressRegisterView.getAddressIn();
 		Database.insertIntoDoctorTABLE(new Doctor(RegisterView.getFirstName(), RegisterView.getLastName(),
-				RegisterView.getEmail(), AddressRegisterView.getClinicNameIn()));
+				RegisterView.getEmail(), AddressRegisterView.getClinicNameIn()), address);
 	}
 
 	private void addUserToDatabase() {
-		Database.insertIntoUserTable(new User(RegisterView.getEmail(), RegisterView.getPassword(), code));
+		Database.insertIntoUserTable(new User(RegisterView.getEmail(), RegisterView.getPassword(), code), true);
 	}
 
 	private void loginButton() {

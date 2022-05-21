@@ -2,6 +2,7 @@ package email;
 
 import controller.ForgotPasswordController;
 import view.NewPacientView;
+import view.PacientDetailView;
 import view.RegisterView;
 
 public class EmailThread extends Thread {
@@ -22,6 +23,10 @@ public class EmailThread extends Thread {
 			break;
 		case 4:
 			Email.sendMail(NewPacientView.emailIn.getText());
+			Email.position++;
+			break;
+		case 5:
+			Email.sendMail(PacientDetailView.emailIn.getText());
 			Email.position++;
 			break;
 		}

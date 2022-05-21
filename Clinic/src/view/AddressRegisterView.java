@@ -52,7 +52,7 @@ public class AddressRegisterView {
 		logo();
 		background();
 
-		new RegisterController();
+		// new RegisterController();
 	}
 
 	public static String getClinicNameIn() {

@@ -11,7 +11,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import controller.DoctorController;
 import controller.LoginController;
+import controller.ProfileController;
 import database.Database;
 
 public class ProfileView {
@@ -48,13 +50,15 @@ public class ProfileView {
 		addButton(changePasswordButton, "Change Password");
 		addButton(changeAddressButton, "Change Address");
 		addButton(changePhoneNumberButton, "Change Phone No");
+
+		new ProfileController();
 	}
 
 	private void profilePanel() {
 		profilePanel = new JPanel();
 		profilePanel.setLayout(null);
 		profilePanel.setBorder(BorderFactory.createLineBorder(Color.black, 2));
-		profilePanel.setVisible(false);
+		profilePanel.setVisible(true);
 		profilePanel.setBackground(Color.LIGHT_GRAY);
 		DoctorView.doctorFrame.add(profilePanel);
 	}
@@ -70,7 +74,8 @@ public class ProfileView {
 
 	private void profilePhoto() {
 		profilePhoto = new JLabel();
-		profilePhoto.setIcon(new ImageIcon(Database.getProfilePhotoPath(LoginController.loggedInEmail)));
+		profilePhoto.setIcon(DoctorController
+				.resizeImageIcon(new ImageIcon(Database.getProfilePhotoPath(LoginController.loggedInEmail))));
 		photoPanel.add(profilePhoto);
 	}
 

@@ -11,7 +11,8 @@ import org.postgresql.util.PSQLException;
 
 import controller.LoginController;
 import controller.NewPacientController;
-import model.Address;
+import controller.PacientDetailController;
+import document.WordDocument;
 import model.Doctor;
 import model.MedicalResults;
 import model.Pacient;
@@ -28,7 +29,6 @@ public class Database {
 		createDoctorTable();
 		createUserTable();
 		createPasswordInfoTable();
-		createAddressTable();
 		createPacientTable();
 		createTestsTable();
 	}
@@ -64,12 +64,12 @@ public class Database {
 		}
 	}
 
-	public static void insertIntoDoctorTABLE(Doctor doctor) {
+	public static void insertIntoDoctorTABLE(Doctor doctor, String address) {
 		try {
 			statement = connection.createStatement();
 			String query = "INSERT INTO Doctor VALUES(" + "'" + doctor.getFirstName() + "'," + "'"
 					+ doctor.getLastName() + "','" + doctor.getEmail() + "','" + doctor.getClinicName()
-					+ "', 'src//Images//Icon//docPic.png');";
+					+ "', 'src//Images//Icon//docPic.png" + "','" + address + "');";
 			statement.execute(query);
 		} catch (PSQLException e) {
 			e.printStackTrace();
@@ -93,11 +93,11 @@ public class Database {
 		}
 	}
 
-	public static void insertIntoUserTable(User user) {
+	public static void insertIntoUserTable(User user, boolean isDoctor) {
 		try {
 			statement = connection.createStatement();
 			String query = "INSERT INTO Users VALUES(" + "'" + user.getEmail() + "'," + "'" + user.getPassword() + "',"
-					+ "'" + user.getActivationCode() + "'," + "'" + false + "');";
+					+ "'" + user.getActivationCode() + "'," + "'" + false + "','" + isDoctor + "');";
 			statement.execute(query);
 		} catch (PSQLException e) {
 			e.printStackTrace();
@@ -129,6 +129,7 @@ public class Database {
 			String potassium, String sodium, String uric_acid, String creatinine, String microalbuminuria,
 			String urinary_protein, String urinary_creatinine, String risc_factor, String cnp) {
 		try {
+
 			statement = connection.createStatement();
 			String query = "INSERT INTO MedicalTest VALUES(" + "'" + TA + "','" + AV + "','" + weight + "','" + height
 					+ "','" + imc + "','" + circumference + "','" + glucose + "','" + cholesterol + "','" + ldl_c
@@ -161,34 +162,6 @@ public class Database {
 		try {
 			statement = connection.createStatement();
 			String query = "INSERT INTO PasswordInfo VALUES(" + "'" + email + "'," + "'" + code + "'," + "'true');";
-			statement.execute(query);
-		} catch (PSQLException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void createAddressTable() {
-		try {
-			statement = connection.createStatement();
-			String query = "CREATE TABLE Address (" + "clinic_name varchar(50)," + "country varchar(50),"
-					+ "city varchar(50)," + "street varchar(50)," + "address varchar(100), email varchar(100) );";
-			statement.execute(query);
-			System.out.println("Address Table Created");
-		} catch (PSQLException e) {
-			System.out.println("Address Table is already created");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public static void insertIntoAddressTable(String clinicName, Address address, String email) {
-		try {
-			statement = connection.createStatement();
-			String query = "INSERT INTO Address values( '" + clinicName + "','" + address.getCountry() + "','"
-					+ address.getCity() + "','" + address.getStreet() + "','" + address.getAddress() + "','" + email
-					+ "');";
 			statement.execute(query);
 		} catch (PSQLException e) {
 			e.printStackTrace();
@@ -276,10 +249,80 @@ public class Database {
 		return 0;
 	}
 
+	public static void getTestResults() {
+		try {
+			statement = connection.createStatement();
+			String query = "SELECT * FROM medical_test_values";
+			rs = statement.executeQuery(query);
+			int i = 0;
+			while (rs.next()) {
+				PacientDetailController.pacientData[i][0] = rs.getString("medical_test_name");
+				PacientDetailController.pacientData[i][2] = rs.getString("medical_test_unit");
+				PacientDetailController.pacientData[i][3] = rs.getString("normal_values");
+				i++;
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void getDoctorDetailsForWordDocument(String email) {
+		try {
+			statement = connection.createStatement();
+			String query = "SELECT first_name, last_name, clinic_name, clinic_address FROM Doctor WHERE email = '"
+					+ email + "';";
+			rs = statement.executeQuery(query);
+			while (rs.next()) {
+				WordDocument.doctorNameString = rs.getString("first_name") + " " + rs.getString("last_name");
+				WordDocument.clinicNameString = rs.getString("clinic_name");
+				WordDocument.clinicAddressString = rs.getString("clinic_address");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	public static void getPacientDetailsForWordDocument(String cnp) {
+		try {
+			statement = connection.createStatement();
+			String query = "SELECT * FROM Pacient WHERE cnp = '" + cnp + "';";
+			rs = statement.executeQuery(query);
+			while (rs.next()) {
+				WordDocument.patientNameString = rs.getString("first_name") + " " + rs.getString("last_name");
+				WordDocument.patientCnp = rs.getString("cnp");
+				WordDocument.patientDob = rs.getString("date_of_birth");
+				WordDocument.patientPhoneNumber = rs.getString("phone_number");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	public static void getBasicTestResults(String cnp) {
+		try {
+			statement = connection.createStatement();
+			String query = "SELECT * FROM Medicaltest WHERE cnp = '" + cnp + "';";
+			rs = statement.executeQuery(query);
+			while (rs.next()) {
+				WordDocument.patientBloodPressure = rs.getString("ta");
+				WordDocument.patientbpm = rs.getString("av");
+				WordDocument.patientWeight = rs.getString("weight");
+				WordDocument.patientHeight = rs.getString("height");
+				WordDocument.patientCircumference = rs.getString("circumference");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
 	public static String getClinicName(String email) {
 		try {
 			statement = connection.createStatement();
-			String query = "SELECT clinic_name FROM Address WHERE email = '" + email + "';";
+			String query = "SELECT clinic_name FROM Doctor WHERE email = '" + email + "';";
 			rs = statement.executeQuery(query);
 			while (rs.next()) {
 				return rs.getString("clinic_name");
@@ -289,6 +332,32 @@ public class Database {
 		}
 
 		return null;
+	}
+
+	public static void getFullTestResults(String cnp) {
+		try {
+			statement = connection.createStatement();
+			String query = "SELECT * FROM medicaltest WHERE cnp = '" + cnp + "';";
+			rs = statement.executeQuery(query);
+			while (rs.next()) {
+				PacientDetailController.pacientData[0][1] = rs.getString("Glucose");
+				PacientDetailController.pacientData[1][1] = rs.getString("Cholesterol");
+				PacientDetailController.pacientData[2][1] = rs.getString("LDL_C");
+				PacientDetailController.pacientData[3][1] = rs.getString("HDL_C");
+				PacientDetailController.pacientData[4][1] = rs.getString("Triglicerides");
+				PacientDetailController.pacientData[5][1] = rs.getString("Potassium");
+				PacientDetailController.pacientData[6][1] = rs.getString("Sodium");
+				PacientDetailController.pacientData[7][1] = rs.getString("Uric_Acid");
+				PacientDetailController.pacientData[8][1] = rs.getString("Creatinine");
+				PacientDetailController.pacientData[9][1] = rs.getString("Microalbuminuria");
+				PacientDetailController.pacientData[10][1] = rs.getString("Urinary_Protein");
+				PacientDetailController.pacientData[11][1] = rs.getString("Urinary_Creatinine");
+
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	public static void showPacients(String email) {
@@ -311,11 +380,10 @@ public class Database {
 	public static String getClinicAddress(String email) {
 		try {
 			statement = connection.createStatement();
-			String query = "SELECT country, city, street, address FROM Address WHERE email = '" + email + "';";
+			String query = "SELECT clinic_address FROM Doctor WHERE email = '" + email + "';";
 			rs = statement.executeQuery(query);
 			while (rs.next()) {
-				return rs.getString("country") + " " + rs.getString("city") + " " + rs.getString("street") + " "
-						+ rs.getString("address");
+				return rs.getString("clinic_address");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -469,7 +537,7 @@ public class Database {
 	public static void updateClinicName(String email, String clinicName) {
 		try {
 			statement = connection.createStatement();
-			String query = "UPDATE Address SET clinic_name = '" + clinicName + "' WHERE email = '" + email + "';";
+			String query = "UPDATE Doctor SET clinic_name = '" + clinicName + "' WHERE email = '" + email + "';";
 			statement.execute(query);
 		} catch (PSQLException e) {
 			e.printStackTrace();
@@ -478,12 +546,10 @@ public class Database {
 		}
 	}
 
-	public static void updateClinicAddress(String email, Address address) {
+	public static void updateClinicAddress(String email, String clinicAddress) {
 		try {
 			statement = connection.createStatement();
-			String query = "UPDATE Address SET country ='" + address.getCountry() + "', " + "city ='"
-					+ address.getCity() + "', street = '" + address.getStreet() + "'," + "address = '"
-					+ address.getAddress() + "';";
+			String query = "UPDATE Doctor SET clinic_address = '" + clinicAddress + "' WHERE email = '" + email + "';";
 			statement.execute(query);
 		} catch (PSQLException e) {
 			e.printStackTrace();
@@ -500,11 +566,11 @@ public class Database {
 					+ "', circumference = '" + mr.getCircumference() + "'," + "glucose ='" + mr.getGlucose()
 					+ "', cholesterol ='" + mr.getCholesterol() + "'," + "ldl_c = '" + mr.getLdl_c() + "'," + "hdl_c ='"
 					+ mr.getHdl_c() + "', triglicerides = '" + mr.getTriglicerides() + "" + "', potassium = '"
-					+ mr.getPotassium() + "', uric_acid ='" + mr.getUric_acid() + "', creatinine ='"
-					+ mr.getCreatinine() + "'," + " microalbuminuria = '" + mr.getMicroalbuminuria()
-					+ "', urinary_protein ='" + mr.getUrinary_protein() + "', urinary_creatinine = '"
-					+ mr.getUrinary_creatinine() + "', risk_factor = '" + mr.getRisk_factor() + "' where cnp = '" + cnp
-					+ "';";
+					+ mr.getPotassium() + "', sodium = '" + mr.getSodium() + "', uric_acid ='" + mr.getUric_acid()
+					+ "', creatinine ='" + mr.getCreatinine() + "'," + " microalbuminuria = '"
+					+ mr.getMicroalbuminuria() + "', urinary_protein ='" + mr.getUrinary_protein()
+					+ "', urinary_creatinine = '" + mr.getUrinary_creatinine() + "', risk_factor = '"
+					+ mr.getRisk_factor() + "' where cnp = '" + cnp + "';";
 			statement.execute(query);
 		} catch (PSQLException e) {
 			e.printStackTrace();

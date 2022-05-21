@@ -12,6 +12,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import database.Database;
+import helper.ViewClass;
 import view.NewPacientView;
 import view.PacientDetailView;
 import view.PacientView;
@@ -32,7 +33,12 @@ public class PacientController {
 	private void addPacientButton() {
 		PacientView.addPacientButton.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
-				new NewPacientView();
+				if (!ViewClass.newPacientView) {
+					new NewPacientView();
+					ViewClass.newPacientView = true;
+				} else {
+					NewPacientView.newPacientFrame.setVisible(true);
+				}
 			}
 		});
 	}
@@ -72,7 +78,15 @@ public class PacientController {
 		getSelectedPacient();
 		PacientView.showPacientDetailsButton.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
-				new PacientDetailView();
+				if (!ViewClass.pacientDetailView) {
+					new PacientDetailView();
+					ViewClass.pacientDetailView = true;
+				} else {
+					PacientDetailController.autocompleteMedicalResults();
+					PacientDetailController.autocompletePersonalDetailsField();
+					PacientDetailController.colorWrongValues();
+					PacientDetailView.pacientDetailsFrame.setVisible(true);
+				}
 			}
 		});
 	}

@@ -17,7 +17,6 @@ import javax.swing.SwingConstants;
 
 import controller.DoctorController;
 import controller.LoginController;
-import controller.ProfileController;
 import database.Database;
 
 public class DoctorView {
@@ -38,7 +37,7 @@ public class DoctorView {
 	public static JLabel profileButton = new JLabel("Profile");
 	public static JLabel logoutButton = new JLabel("Logout");
 
-	public static JLabel nameLabel = new JLabel("Dr. Amza Robert");
+	public static JLabel nameLabel = new JLabel("");
 	public static JLabel docPhoto;
 
 	public DoctorView() {
@@ -47,9 +46,12 @@ public class DoctorView {
 
 		new DoctorController();
 
-		new ProfileView();
-		new ProfileController();
+	}
 
+	public static void updateDataOnRelogin() {
+		docPhoto.setIcon(DoctorController
+				.resizeImageIcon(new ImageIcon(Database.getProfilePhotoPath(LoginController.loggedInEmail))));
+		nameLabel.setText("Dr. " + Database.getDoctorName(LoginController.loggedInEmail));
 	}
 
 	private void doctorFrame() {
@@ -78,7 +80,7 @@ public class DoctorView {
 		doctorFrame.add(navbarPanel, BorderLayout.WEST);
 	}
 
-	private void photoPanel() {
+	private static void photoPanel() {
 		photoPanel = new JPanel();
 		photoPanel.setPreferredSize(new Dimension(250, 180));
 		navbarPanel.add(photoPanel);
@@ -86,15 +88,16 @@ public class DoctorView {
 		docPhoto();
 	}
 
-	private void doctorName() {
+	private static void doctorName() {
 		nameLabel.setFont(new Font("Tahoma", Font.BOLD, 24));
 		nameLabel.setText("Dr. " + Database.getDoctorName(LoginController.loggedInEmail));
 		navbarPanel.add(nameLabel);
 	}
 
-	private void docPhoto() {
+	private static void docPhoto() {
 		docPhoto = new JLabel();
-		docPhoto.setIcon(new ImageIcon(Database.getProfilePhotoPath(LoginController.loggedInEmail)));
+		docPhoto.setIcon(DoctorController
+				.resizeImageIcon(new ImageIcon(Database.getProfilePhotoPath(LoginController.loggedInEmail))));
 		photoPanel.add(docPhoto);
 	}
 

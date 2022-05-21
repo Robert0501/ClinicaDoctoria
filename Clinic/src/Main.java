@@ -3,9 +3,9 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import database.Database;
+import document.WordDocument;
 import email.Email;
 import view.LoginView;
-import view.PacientDetailView;
 
 public class Main {
 

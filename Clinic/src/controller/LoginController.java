@@ -9,9 +9,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 
 import database.Database;
+import helper.ViewClass;
 import regex.RegEx;
 import view.DoctorView;
 import view.LoginView;
+import view.ProfileView;
 import view.RegisterView;
 
 public class LoginController {
@@ -31,7 +33,7 @@ public class LoginController {
 		LoginView.loginButton.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 				doctorLogin();
-				//pacientLogin();
+				// pacientLogin();
 			}
 		});
 
@@ -40,7 +42,7 @@ public class LoginController {
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == e.VK_ENTER) {
 					doctorLogin();
-					//pacientLogin();
+					// pacientLogin();
 				}
 			}
 		});
@@ -108,7 +110,12 @@ public class LoginController {
 					LoginView.setVisibility(false);
 					LoginView.setEmail("");
 					LoginView.setPassword("");
-					new DoctorView();
+					if (!ViewClass.doctorView) {
+						new DoctorView();
+						ViewClass.doctorView = true;
+					} else {
+						DoctorView.doctorFrame.setVisible(true);
+					}
 				}
 			} else {
 				JOptionPane.showMessageDialog(null, "Username or password are wrong", "Alert",
@@ -134,7 +141,12 @@ public class LoginController {
 								JOptionPane.INFORMATION_MESSAGE);
 						LoginView.setVisibility(false);
 						loggedInEmail = LoginView.getEmail();
-						new DoctorView();
+						if (!ViewClass.doctorView) {
+							new DoctorView();
+							ViewClass.doctorView = true;
+						} else {
+							DoctorView.doctorFrame.setVisible(true);
+						}
 					} else {
 						JOptionPane.showMessageDialog(null, "The code you provided is wrong", "Alert",
 								JOptionPane.ERROR_MESSAGE);
@@ -146,7 +158,13 @@ public class LoginController {
 					LoginView.setVisibility(false);
 					LoginView.setEmail("");
 					LoginView.setPassword("");
-					new DoctorView();
+					if (!ViewClass.doctorView) {
+						new DoctorView();
+						ViewClass.doctorView = true;
+					} else {
+						DoctorView.doctorFrame.setVisible(true);
+						DoctorView.updateDataOnRelogin();
+					}
 				}
 			}
 		} else {
