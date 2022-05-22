@@ -1,4 +1,4 @@
-package controller;
+package doctor_controller;
 
 import java.awt.Graphics2D;
 import java.awt.event.MouseAdapter;
@@ -13,9 +13,9 @@ import javax.swing.JTextField;
 import javax.swing.filechooser.FileSystemView;
 
 import database.Database;
+import doctor_view.DoctorPerspectiveView;
+import doctor_view.ProfileView;
 import regex.RegEx;
-import view.DoctorView;
-import view.ProfileView;
 
 public class ProfileController {
 
@@ -151,7 +151,7 @@ public class ProfileController {
 				JOptionPane.showMessageDialog(null, "The name was successfully changed.", "Name successfully changed",
 						JOptionPane.INFORMATION_MESSAGE);
 				ProfileView.nameLabel.setText("Dr. " + lastName.getText() + " " + firstName.getText());
-				DoctorView.nameLabel.setText("Dr. " + lastName.getText() + " " + firstName.getText());
+				DoctorPerspectiveView.nameLabel.setText("Dr. " + lastName.getText() + " " + firstName.getText());
 			}
 		}
 	}
@@ -219,8 +219,8 @@ public class ProfileController {
 				fileChooser.showSaveDialog(null);
 				photoPath = fileChooser.getSelectedFile().getAbsolutePath();
 				System.out.println(photoPath);
-				ProfileView.profilePhoto.setIcon(DoctorController.resizeImageIcon(new ImageIcon((photoPath))));
-				DoctorView.docPhoto.setIcon(DoctorController.resizeImageIcon(new ImageIcon((photoPath))));
+				ProfileView.profilePhoto.setIcon(DoctorPerspectiveController.resizeImageIcon(new ImageIcon((photoPath))));
+				DoctorPerspectiveView.docPhoto.setIcon(DoctorPerspectiveController.resizeImageIcon(new ImageIcon((photoPath))));
 				Database.updateProfilePhotoPath(LoginController.loggedInEmail, photoPath);
 			}
 		});

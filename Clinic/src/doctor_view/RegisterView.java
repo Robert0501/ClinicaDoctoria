@@ -1,4 +1,4 @@
-package view;
+package doctor_view;
 
 import java.awt.Color;
 import java.awt.Cursor;
@@ -13,7 +13,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
-import controller.RegisterController;
+import doctor_controller.RegisterController;
 
 public class RegisterView {
 

@@ -1,4 +1,4 @@
-package view;
+package doctor_view;
 
 import java.awt.Dimension;
 
@@ -9,7 +9,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import controller.NewPacientController;
+import doctor_controller.NewPacientController;
 
 public class NewPacientView {
 

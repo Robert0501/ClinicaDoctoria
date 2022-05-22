@@ -10,4 +10,7 @@ public class ViewClass {
 	public static boolean profileView = false;
 	public static boolean registerView = false;
 
+	public static boolean patientView = false;
+	public static boolean testHistoryView = false;
+
 }

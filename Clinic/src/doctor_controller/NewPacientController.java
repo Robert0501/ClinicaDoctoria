@@ -1,4 +1,4 @@
-package controller;
+package doctor_controller;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -8,12 +8,12 @@ import javax.swing.JOptionPane;
 import org.postgresql.util.PSQLException;
 
 import database.Database;
+import doctor_view.NewPacientView;
+import doctor_view.PacientView;
 import email.Email;
 import helper.Code;
 import model.User;
 import regex.RegEx;
-import view.NewPacientView;
-import view.PacientView;
 
 public class NewPacientController {
 

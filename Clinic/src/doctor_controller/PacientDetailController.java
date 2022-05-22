@@ -1,4 +1,4 @@
-package controller;
+package doctor_controller;
 
 import java.awt.Color;
 import java.awt.event.MouseAdapter;
@@ -7,16 +7,14 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import javax.swing.filechooser.FileSystemView;
 
 import database.Database;
+import doctor_view.PacientDetailView;
 import document.WordDocument;
 import email.Email;
 import model.MedicalResults;
 import model.Pacient;
-import view.PacientDetailView;
 
 public class PacientDetailController {
 
@@ -25,10 +23,9 @@ public class PacientDetailController {
 	private static final DecimalFormat df = new DecimalFormat("0.00");
 
 	public static String pacientData[][] = new String[12][4];
-
 	public static String fileName;
 
-	public static JFileChooser fileChooser = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+	public static boolean testResultValues[] = new boolean[12];
 
 	public PacientDetailController() {
 
@@ -113,11 +110,23 @@ public class PacientDetailController {
 
 	}
 
+	private String getCurrentDate() {
+		SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
+		Date date = new Date();
+
+		return dateFormatter.format(date);
+	}
+
+	private String getCurrentHour() {
+		SimpleDateFormat dateFormatter = new SimpleDateFormat("HH:mm");
+		Date date = new Date();
+
+		return dateFormatter.format(date);
+	}
+
 	private void downloadTestResults() {
 		PacientDetailView.downloadPDFButton.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
-				fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-				fileChooser.showSaveDialog(null);
 				WordDocument.name = PacientDetailView.firstNameIn.getText() + "_"
 						+ PacientDetailView.lastNameIn.getText() + "_" + getCurrentDateAndTime();
 				Database.getTestResults();
@@ -130,6 +139,12 @@ public class PacientDetailController {
 
 				Email.index = 5;
 				Email.email[Email.position].start();
+
+				JOptionPane.showMessageDialog(null, "Test Results has been successfully sent via email",
+						"Test Results Successfully Sent", JOptionPane.INFORMATION_MESSAGE);
+
+				Database.insertIntoTestHistoryTable(PacientDetailView.emailIn.getText(), LoginController.loggedInEmail,
+						WordDocument.path + WordDocument.name, WordDocument.name, getCurrentDate(), getCurrentHour());
 			}
 		});
 	}
@@ -149,72 +164,103 @@ public class PacientDetailController {
 			if (Double.parseDouble(PacientDetailView.glucoseIn.getText()) <= 70
 					|| Double.parseDouble(PacientDetailView.glucoseIn.getText()) >= 105) {
 				PacientDetailView.glucoseIn.setBackground(Color.red);
+				testResultValues[0] = true;
 			} else {
 				PacientDetailView.glucoseIn.setBackground(Color.white);
+				testResultValues[0] = false;
 			}
 
 			if (Double.parseDouble(PacientDetailView.cholesterolIn.getText()) >= 200) {
 				PacientDetailView.cholesterolIn.setBackground(Color.red);
+				testResultValues[1] = true;
 			} else {
 				PacientDetailView.cholesterolIn.setBackground(Color.white);
+				testResultValues[1] = false;
 			}
 
 			if (Double.parseDouble(PacientDetailView.LDLCIn.getText()) >= 100) {
 				PacientDetailView.LDLCIn.setBackground(Color.red);
+				testResultValues[2] = true;
 			} else {
 				PacientDetailView.LDLCIn.setBackground(Color.white);
+				testResultValues[2] = false;
 			}
 
 			if (Double.parseDouble(PacientDetailView.HDLCIn.getText()) <= 60) {
 				PacientDetailView.HDLCIn.setBackground(Color.red);
+				testResultValues[3] = true;
 			} else {
 				PacientDetailView.HDLCIn.setBackground(Color.white);
+				testResultValues[3] = false;
 			}
 
 			if (Double.parseDouble(PacientDetailView.trigliceridesIn.getText()) >= 150) {
 				PacientDetailView.trigliceridesIn.setBackground(Color.red);
+				testResultValues[4] = true;
 			} else {
 				PacientDetailView.trigliceridesIn.setBackground(Color.white);
+				testResultValues[4] = false;
 			}
 
 			if (Double.parseDouble(PacientDetailView.potassiumIn.getText()) < 3.3
 					|| Double.parseDouble(PacientDetailView.potassiumIn.getText()) > 5.1) {
 				PacientDetailView.potassiumIn.setBackground(Color.red);
+				testResultValues[5] = true;
 			} else {
 				PacientDetailView.potassiumIn.setBackground(Color.white);
+				testResultValues[5] = false;
 			}
 
 			if (Double.parseDouble(PacientDetailView.sodiumIn.getText()) < 136
 					|| Double.parseDouble(PacientDetailView.sodiumIn.getText()) > 145) {
 				PacientDetailView.sodiumIn.setBackground(Color.red);
+				testResultValues[6] = true;
 			} else {
 				PacientDetailView.sodiumIn.setBackground(Color.white);
+				testResultValues[6] = false;
 			}
 
 			if (Double.parseDouble(PacientDetailView.uricAcidIn.getText()) >= 7) {
 				PacientDetailView.uricAcidIn.setBackground(Color.red);
+				testResultValues[7] = true;
 			} else {
 				PacientDetailView.uricAcidIn.setBackground(Color.white);
+				testResultValues[7] = false;
 			}
 
 			if (Double.parseDouble(PacientDetailView.creatinineIn.getText()) < 0.5
 					|| Double.parseDouble(PacientDetailView.creatinineIn.getText()) > 1.2) {
 				PacientDetailView.creatinineIn.setBackground(Color.red);
+				testResultValues[8] = true;
 			} else {
 				PacientDetailView.creatinineIn.setBackground(Color.white);
+				testResultValues[8] = false;
 			}
 
-			if (Double.parseDouble(PacientDetailView.urinaryProteinIn.getText()) < 90
-					|| Double.parseDouble(PacientDetailView.urinaryProteinIn.getText()) > 300) {
+			if (Double.parseDouble(PacientDetailView.urinaryProteinIn.getText()) < 20
+					|| Double.parseDouble(PacientDetailView.urinaryProteinIn.getText()) > 800) {
 				PacientDetailView.urinaryProteinIn.setBackground(Color.red);
+				testResultValues[9] = true;
 			} else {
 				PacientDetailView.urinaryProteinIn.setBackground(Color.white);
+				testResultValues[9] = false;
+			}
+
+			if (Double.parseDouble(PacientDetailView.urinaryCreatinineIn.getText()) < 90
+					|| Double.parseDouble(PacientDetailView.urinaryCreatinineIn.getText()) > 300) {
+				PacientDetailView.urinaryCreatinineIn.setBackground(Color.red);
+				testResultValues[10] = true;
+			} else {
+				PacientDetailView.urinaryCreatinineIn.setBackground(Color.white);
+				testResultValues[10] = false;
 			}
 
 			if (Double.parseDouble(PacientDetailView.microalbuminuriaIn.getText()) > 25) {
 				PacientDetailView.microalbuminuriaIn.setBackground(Color.red);
+				testResultValues[11] = true;
 			} else {
 				PacientDetailView.microalbuminuriaIn.setBackground(Color.white);
+				testResultValues[11] = false;
 			}
 		} catch (NumberFormatException e) {
 

@@ -20,7 +20,7 @@ import com.spire.doc.documents.TableRowHeightType;
 import com.spire.doc.documents.VerticalAlignment;
 import com.spire.doc.fields.TextRange;
 
-import controller.PacientDetailController;
+import doctor_controller.PacientDetailController;
 
 public class WordDocument {
 
@@ -90,7 +90,7 @@ public class WordDocument {
 
 	private String getTodayDate() {
 		Date date = new Date();
-		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yy");
+		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 		return formatter.format(date);
 	}
 
@@ -320,6 +320,9 @@ public class WordDocument {
 			dataRow.getRowFormat().setBackColor(Color.white);
 			for (int c = 0; c < PacientDetailController.pacientData[r].length; c++) {
 				dataRow.getCells().get(c).getCellFormat().setVerticalAlignment(VerticalAlignment.Middle);
+				if (PacientDetailController.testResultValues[r]) {
+					dataRow.getCells().get(1).getCellFormat().setBackColor(Color.red);
+				}
 				TextRange range2 = dataRow.getCells().get(c).addParagraph()
 						.appendText(PacientDetailController.pacientData[r][c]);
 				range2.getCharacterFormat().setFontName("Arial");

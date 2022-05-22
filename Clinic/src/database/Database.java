@@ -9,15 +9,16 @@ import javax.swing.JOptionPane;
 
 import org.postgresql.util.PSQLException;
 
-import controller.LoginController;
-import controller.NewPacientController;
-import controller.PacientDetailController;
+import doctor_controller.LoginController;
+import doctor_controller.NewPacientController;
+import doctor_controller.PacientDetailController;
+import doctor_view.PacientView;
 import document.WordDocument;
 import model.Doctor;
 import model.MedicalResults;
 import model.Pacient;
 import model.User;
-import view.PacientView;
+import patient_view.TestHistoryView;
 
 public class Database {
 	static Connection connection = null;
@@ -31,6 +32,7 @@ public class Database {
 		createPasswordInfoTable();
 		createPacientTable();
 		createTestsTable();
+		createTestHistoryTable();
 	}
 
 	private void connectDB() {
@@ -54,7 +56,7 @@ public class Database {
 			statement = connection.createStatement();
 			String query = "CREATE TABLE Doctor(" + "first_name varchar(100) not null, "
 					+ "last_name varchar(100) not null, " + "email varchar(100) not null , "
-					+ "clinic_name varchar(50), " + "photoPath varchar(100)," + "primary key(email) );";
+					+ "clinic_name varchar(50), " + "primary key(email) );";
 			statement.execute(query);
 			System.out.println("Doctor Table Created");
 		} catch (PSQLException e) {
@@ -68,8 +70,8 @@ public class Database {
 		try {
 			statement = connection.createStatement();
 			String query = "INSERT INTO Doctor VALUES(" + "'" + doctor.getFirstName() + "'," + "'"
-					+ doctor.getLastName() + "','" + doctor.getEmail() + "','" + doctor.getClinicName()
-					+ "', 'src//Images//Icon//docPic.png" + "','" + address + "');";
+					+ doctor.getLastName() + "','" + doctor.getEmail() + "','" + doctor.getClinicName() + "','"
+					+ address + "');";
 			statement.execute(query);
 		} catch (PSQLException e) {
 			e.printStackTrace();
@@ -82,8 +84,8 @@ public class Database {
 		try {
 			statement = connection.createStatement();
 			String query = "CREATE TABLE Users (" + "email varchar(100) not null, " + "password varchar(100) not null, "
-					+ "activation_code varchar(10) not null , " + "is_activated boolean not null,"
-					+ "primary key(email) );";
+					+ "activation_code varchar(10) not null , "
+					+ "is_activated boolean not null, photoPath varchar(200)," + "primary key(email) );";
 			statement.execute(query);
 			System.out.println("User Table Created");
 		} catch (PSQLException e) {
@@ -97,7 +99,8 @@ public class Database {
 		try {
 			statement = connection.createStatement();
 			String query = "INSERT INTO Users VALUES(" + "'" + user.getEmail() + "'," + "'" + user.getPassword() + "',"
-					+ "'" + user.getActivationCode() + "'," + "'" + false + "','" + isDoctor + "');";
+					+ "'" + user.getActivationCode() + "'," + "'" + false + "','" + isDoctor
+					+ "', 'src//Images//Icon//docPic.png" + "');";
 			statement.execute(query);
 		} catch (PSQLException e) {
 			e.printStackTrace();
@@ -170,6 +173,34 @@ public class Database {
 		}
 	}
 
+	public static void createTestHistoryTable() {
+		try {
+			statement = connection.createStatement();
+			String query = "CREATE TABLE TestHistory (patient_email varchar(100), doctor_email varchar(100), "
+					+ "test_result_path varchar(200),document_name varchar(200), test_date varchar(15), test_hour varchar(15) );";
+			statement.execute(query);
+			System.out.println("Test History Table Created");
+		} catch (PSQLException e) {
+			System.out.println("Test History Table is already created");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void insertIntoTestHistoryTable(String patient_email, String doctor_email, String path,
+			String documentName, String date, String hour) {
+		try {
+			statement = connection.createStatement();
+			String query = "INSERT INTO TestHistory VALUES( '" + patient_email + "','" + doctor_email + "','" + path
+					+ "','" + documentName + "','" + date + "','" + hour + "');";
+			statement.execute(query);
+		} catch (PSQLException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	public static void createPacientTable() {
 		try {
 			statement = connection.createStatement();
@@ -190,7 +221,7 @@ public class Database {
 			String phone, String country, String address) {
 		try {
 			statement = connection.createStatement();
-			String query = "INSERT INTO Pacient VALUES( '" + lastName + "','" + firstName + "','" + cnp + "','" + dob
+			String query = "INSERT INTO Pacient VALUES( '" + firstName + "','" + lastName + "','" + cnp + "','" + dob
 					+ "','" + email + "','" + phone + "','" + country + "','" + address + "','"
 					+ LoginController.loggedInEmail + "');";
 			statement.execute(query);
@@ -265,6 +296,21 @@ public class Database {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	public static String getTestPath(String name) {
+		try {
+			statement = connection.createStatement();
+			String query = "SELECT test_result_path FROM testhistory WHERE document_name = '" + name + "';";
+			rs = statement.executeQuery(query);
+			while (rs.next()) {
+				System.out.println(rs.getString("test_result_path"));
+				return rs.getString("test_result_path");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	public static void getDoctorDetailsForWordDocument(String email) {
@@ -349,9 +395,9 @@ public class Database {
 				PacientDetailController.pacientData[6][1] = rs.getString("Sodium");
 				PacientDetailController.pacientData[7][1] = rs.getString("Uric_Acid");
 				PacientDetailController.pacientData[8][1] = rs.getString("Creatinine");
-				PacientDetailController.pacientData[9][1] = rs.getString("Microalbuminuria");
-				PacientDetailController.pacientData[10][1] = rs.getString("Urinary_Protein");
-				PacientDetailController.pacientData[11][1] = rs.getString("Urinary_Creatinine");
+				PacientDetailController.pacientData[9][1] = rs.getString("Urinary_Protein");
+				PacientDetailController.pacientData[10][1] = rs.getString("Urinary_Creatinine");
+				PacientDetailController.pacientData[11][1] = rs.getString("Microalbuminuria");
 
 			}
 		} catch (Exception e) {
@@ -369,6 +415,22 @@ public class Database {
 				PacientView.model.addRow(new Object[] { rs.getString("first_name"), rs.getString("last_name"),
 						rs.getString("cnp"), rs.getString("date_of_birth"), rs.getString("email"),
 						rs.getString("phone_number"), rs.getString("country"), rs.getString("address") });
+
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	public static void showTestResults(String email) {
+		try {
+			statement = connection.createStatement();
+			String query = "SELECT * FROM TestHistory WHERE patient_email = '" + email + "' ;";
+			rs = statement.executeQuery(query);
+			while (rs.next()) {
+				TestHistoryView.model.addRow(new Object[] { rs.getString("test_date"), rs.getString("test_hour"),
+						rs.getString("document_name") });
 
 			}
 		} catch (Exception e) {
@@ -395,7 +457,7 @@ public class Database {
 	public static String getProfilePhotoPath(String email) {
 		try {
 			statement = connection.createStatement();
-			String query = "SELECT photoPath FROM Doctor WHERE email = '" + email + "';";
+			String query = "SELECT photoPath FROM Users WHERE email = '" + email + "';";
 			rs = statement.executeQuery(query);
 			while (rs.next()) {
 				return rs.getString("photoPath");
@@ -411,6 +473,21 @@ public class Database {
 		try {
 			statement = connection.createStatement();
 			String query = "SELECT first_name, last_name FROM Doctor WHERE email = '" + email + "';";
+			rs = statement.executeQuery(query);
+			while (rs.next()) {
+				return rs.getString("first_name") + " " + rs.getString("last_name");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	public static String getPatientName(String email) {
+		try {
+			statement = connection.createStatement();
+			String query = "SELECT first_name, last_name FROM Pacient WHERE email = '" + email + "';";
 			rs = statement.executeQuery(query);
 			while (rs.next()) {
 				return rs.getString("first_name") + " " + rs.getString("last_name");
@@ -525,7 +602,7 @@ public class Database {
 	public static void updateProfilePhotoPath(String email, String newPath) {
 		try {
 			statement = connection.createStatement();
-			String query = "UPDATE Doctor SET photopath = '" + newPath + "' WHERE email = '" + email + "';";
+			String query = "UPDATE Users SET photopath = '" + newPath + "' WHERE email = '" + email + "';";
 			statement.execute(query);
 		} catch (PSQLException e) {
 			e.printStackTrace();

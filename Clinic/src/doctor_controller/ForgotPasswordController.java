@@ -1,4 +1,4 @@
-package controller;
+package doctor_controller;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -8,10 +8,10 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 import database.Database;
+import doctor_view.LoginView;
 import email.Email;
 import helper.Code;
 import regex.RegEx;
-import view.LoginView;
 
 public class ForgotPasswordController {
 

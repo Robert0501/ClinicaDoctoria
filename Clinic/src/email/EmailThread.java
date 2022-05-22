@@ -1,9 +1,9 @@
 package email;
 
-import controller.ForgotPasswordController;
-import view.NewPacientView;
-import view.PacientDetailView;
-import view.RegisterView;
+import doctor_controller.ForgotPasswordController;
+import doctor_view.NewPacientView;
+import doctor_view.PacientDetailView;
+import doctor_view.RegisterView;
 
 public class EmailThread extends Thread {
 	public void run() {

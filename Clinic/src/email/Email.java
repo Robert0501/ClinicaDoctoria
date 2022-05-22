@@ -18,9 +18,9 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
 import database.Database;
+import doctor_view.NewPacientView;
+import doctor_view.PacientDetailView;
 import document.WordDocument;
-import view.NewPacientView;
-import view.PacientDetailView;
 
 public class Email {
 

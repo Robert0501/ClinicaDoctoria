@@ -1,4 +1,4 @@
-package controller;
+package doctor_controller;
 
 import java.awt.Graphics2D;
 import java.awt.event.MouseAdapter;
@@ -7,24 +7,24 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.ImageIcon;
 
+import doctor_view.DoctorPerspectiveView;
+import doctor_view.LoginView;
+import doctor_view.PacientView;
+import doctor_view.ProfileView;
 import helper.ViewClass;
-import view.DoctorView;
-import view.LoginView;
-import view.PacientView;
-import view.ProfileView;
 
-public class DoctorController {
+public class DoctorPerspectiveController {
 
-	public DoctorController() {
+	public DoctorPerspectiveController() {
 		logoutButton();
 		profileButton();
 		pacientButton();
 	}
 
 	private void logoutButton() {
-		DoctorView.logoutButton.addMouseListener(new MouseAdapter() {
+		DoctorPerspectiveView.logoutButton.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
-				DoctorView.doctorFrame.setVisible(false);
+				DoctorPerspectiveView.doctorFrame.setVisible(false);
 				LoginView.loginFrame.setVisible(true);
 			}
 		});
@@ -49,7 +49,7 @@ public class DoctorController {
 	}
 
 	private void profileButton() {
-		DoctorView.profileButton.addMouseListener(new MouseAdapter() {
+		DoctorPerspectiveView.profileButton.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 				if (!ViewClass.profileView) {
 					System.out.println(ViewClass.pacientView);
@@ -69,7 +69,7 @@ public class DoctorController {
 	}
 
 	private void pacientButton() {
-		DoctorView.pacientsButton.addMouseListener(new MouseAdapter() {
+		DoctorPerspectiveView.pacientsButton.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 				if (!ViewClass.pacientView) {
 					if (ViewClass.profileView) {

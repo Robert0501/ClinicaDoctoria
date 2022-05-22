@@ -1,4 +1,4 @@
-package view;
+package doctor_view;
 
 import java.awt.Color;
 import java.awt.Cursor;
@@ -11,10 +11,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import controller.DoctorController;
-import controller.LoginController;
-import controller.ProfileController;
 import database.Database;
+import doctor_controller.DoctorPerspectiveController;
+import doctor_controller.LoginController;
+import doctor_controller.ProfileController;
 
 public class ProfileView {
 	public static JPanel profilePanel;
@@ -60,7 +60,7 @@ public class ProfileView {
 		profilePanel.setBorder(BorderFactory.createLineBorder(Color.black, 2));
 		profilePanel.setVisible(true);
 		profilePanel.setBackground(Color.LIGHT_GRAY);
-		DoctorView.doctorFrame.add(profilePanel);
+		DoctorPerspectiveView.doctorFrame.add(profilePanel);
 	}
 
 	private void photoPanel() {
@@ -74,7 +74,7 @@ public class ProfileView {
 
 	private void profilePhoto() {
 		profilePhoto = new JLabel();
-		profilePhoto.setIcon(DoctorController
+		profilePhoto.setIcon(DoctorPerspectiveController
 				.resizeImageIcon(new ImageIcon(Database.getProfilePhotoPath(LoginController.loggedInEmail))));
 		photoPanel.add(profilePhoto);
 	}

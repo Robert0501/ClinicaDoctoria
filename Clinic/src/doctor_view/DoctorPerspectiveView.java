@@ -1,4 +1,4 @@
-package view;
+package doctor_view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -15,11 +15,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import controller.DoctorController;
-import controller.LoginController;
 import database.Database;
+import doctor_controller.DoctorPerspectiveController;
+import doctor_controller.LoginController;
 
-public class DoctorView {
+public class DoctorPerspectiveView {
 	public static JFrame doctorFrame;
 	public static JPanel navbarPanel;
 	public static JPanel photoPanel;
@@ -40,16 +40,16 @@ public class DoctorView {
 	public static JLabel nameLabel = new JLabel("");
 	public static JLabel docPhoto;
 
-	public DoctorView() {
+	public DoctorPerspectiveView() {
 		doctorFrame();
 		navbarPanel();
 
-		new DoctorController();
+		new DoctorPerspectiveController();
 
 	}
 
 	public static void updateDataOnRelogin() {
-		docPhoto.setIcon(DoctorController
+		docPhoto.setIcon(DoctorPerspectiveController
 				.resizeImageIcon(new ImageIcon(Database.getProfilePhotoPath(LoginController.loggedInEmail))));
 		nameLabel.setText("Dr. " + Database.getDoctorName(LoginController.loggedInEmail));
 	}
@@ -96,7 +96,7 @@ public class DoctorView {
 
 	private static void docPhoto() {
 		docPhoto = new JLabel();
-		docPhoto.setIcon(DoctorController
+		docPhoto.setIcon(DoctorPerspectiveController
 				.resizeImageIcon(new ImageIcon(Database.getProfilePhotoPath(LoginController.loggedInEmail))));
 		photoPanel.add(docPhoto);
 	}

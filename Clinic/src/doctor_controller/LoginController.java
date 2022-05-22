@@ -1,4 +1,4 @@
-package controller;
+package doctor_controller;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -9,12 +9,12 @@ import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 
 import database.Database;
+import doctor_view.DoctorPerspectiveView;
+import doctor_view.LoginView;
+import doctor_view.RegisterView;
 import helper.ViewClass;
+import patient_view.PatientPerspectiveView;
 import regex.RegEx;
-import view.DoctorView;
-import view.LoginView;
-import view.ProfileView;
-import view.RegisterView;
 
 public class LoginController {
 
@@ -32,8 +32,11 @@ public class LoginController {
 	private void loginButton() {
 		LoginView.loginButton.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
-				doctorLogin();
-				// pacientLogin();
+				if (Database.checkIfUserIsDoctor(LoginView.getEmail())) {
+					doctorLogin();
+				} else {
+					pacientLogin();
+				}
 			}
 		});
 
@@ -41,8 +44,11 @@ public class LoginController {
 			@SuppressWarnings("static-access")
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == e.VK_ENTER) {
-					doctorLogin();
-					// pacientLogin();
+					if (Database.checkIfUserIsDoctor(LoginView.getEmail())) {
+						doctorLogin();
+					} else {
+						pacientLogin();
+					}
 				}
 			}
 		});
@@ -81,7 +87,6 @@ public class LoginController {
 	}
 
 	private void pacientLogin() {
-		System.out.println("Pacient");
 		if (!Database.checkIfUserIsDoctor(LoginView.getEmail())) {
 			if (checkEmptyEmail()) {
 				JOptionPane.showMessageDialog(null, "Username cannot be empty", "Alert", JOptionPane.ERROR_MESSAGE);
@@ -110,11 +115,11 @@ public class LoginController {
 					LoginView.setVisibility(false);
 					LoginView.setEmail("");
 					LoginView.setPassword("");
-					if (!ViewClass.doctorView) {
-						new DoctorView();
-						ViewClass.doctorView = true;
+					if (!ViewClass.patientView) {
+						new PatientPerspectiveView();
+						ViewClass.patientView = true;
 					} else {
-						DoctorView.doctorFrame.setVisible(true);
+						PatientPerspectiveView.patientFrame.setVisible(true);
 					}
 				}
 			} else {
@@ -123,10 +128,10 @@ public class LoginController {
 			}
 
 		}
+
 	}
 
 	private void doctorLogin() {
-		System.out.println("Doctor");
 		if (Database.checkIfUserIsDoctor(LoginView.getEmail())) {
 			if (checkEmptyEmail()) {
 				JOptionPane.showMessageDialog(null, "Username cannot be empty", "Alert", JOptionPane.ERROR_MESSAGE);
@@ -142,10 +147,10 @@ public class LoginController {
 						LoginView.setVisibility(false);
 						loggedInEmail = LoginView.getEmail();
 						if (!ViewClass.doctorView) {
-							new DoctorView();
+							new DoctorPerspectiveView();
 							ViewClass.doctorView = true;
 						} else {
-							DoctorView.doctorFrame.setVisible(true);
+							DoctorPerspectiveView.doctorFrame.setVisible(true);
 						}
 					} else {
 						JOptionPane.showMessageDialog(null, "The code you provided is wrong", "Alert",
@@ -159,18 +164,18 @@ public class LoginController {
 					LoginView.setEmail("");
 					LoginView.setPassword("");
 					if (!ViewClass.doctorView) {
-						new DoctorView();
+						new DoctorPerspectiveView();
 						ViewClass.doctorView = true;
 					} else {
-						DoctorView.doctorFrame.setVisible(true);
-						DoctorView.updateDataOnRelogin();
+						DoctorPerspectiveView.doctorFrame.setVisible(true);
+						DoctorPerspectiveView.updateDataOnRelogin();
 					}
 				}
 			}
 		} else {
 			JOptionPane.showMessageDialog(null, "Username or password are wrong", "Alert", JOptionPane.ERROR_MESSAGE);
-
 		}
+
 	}
 
 	private boolean checkEmptyEmail() {

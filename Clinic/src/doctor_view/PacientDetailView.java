@@ -1,4 +1,4 @@
-package view;
+package doctor_view;
 
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -11,7 +11,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import controller.PacientDetailController;
+import doctor_controller.PacientDetailController;
 
 public class PacientDetailView {
 
@@ -93,7 +93,7 @@ public class PacientDetailView {
 	private JLabel trigliceridesValue = new JLabel("Triglicerides Value: < 150 mg/dl ");
 	private JLabel potassiumValue = new JLabel("Potassium Value: 3.3 - 5.1 mEq/L");
 	private JLabel sodiumValue = new JLabel("Sodium Value: 136 - 145 mEq/L ");
-	private JLabel uricAcidValue = new JLabel("Uric Acid Value: M < 7 ");
+	private JLabel uricAcidValue = new JLabel("Uric Acid Value: < 7 ");
 	private JLabel creatinineValue = new JLabel("Creatinine Value: 0.5 - 1.2 mg/dl ");
 	private JLabel microalbuminuriaValue = new JLabel("Microalbuminuria Value < 25 ug/ml");
 	private JLabel urinaryProteineValue = new JLabel("Urinary Proteine Value: 20 - 80 mEq/L");
@@ -106,7 +106,7 @@ public class PacientDetailView {
 	private JLabel morbidObesity = new JLabel("Morbid Obesity > 40 km/m2");
 
 	public static JButton saveDataButton = new JButton("Save Changes");
-	public static JButton downloadPDFButton = new JButton("Download PDF");
+	public static JButton downloadPDFButton = new JButton("Send Test Results");
 
 	int test_Value_labels_initial_x = 0;
 	int test_Value_labels_initial_y = 35;

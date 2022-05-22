@@ -1,4 +1,4 @@
-package view;
+package doctor_view;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -23,9 +23,9 @@ import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
-import controller.LoginController;
-import controller.PacientController;
 import database.Database;
+import doctor_controller.LoginController;
+import doctor_controller.PacientController;
 import helper.HintTextFieldUI;
 
 public class PacientView {
@@ -42,10 +42,11 @@ public class PacientView {
 
 	public static DefaultTableModel model;
 	public static JTable table;
-
+	public static TableRowSorter<TableModel> rowSorter;
+	
 	public static JTextField searchField;
 
-	public static TableRowSorter<TableModel> rowSorter;
+	
 
 	public PacientView() {
 		pacientPanel();
@@ -56,13 +57,12 @@ public class PacientView {
 	}
 
 	private void pacientPanel() {
-		System.out.println("Am intrat");
 		pacientPanel = new JPanel();
 		pacientPanel.setLayout(new FlowLayout());
 		pacientPanel.setVisible(false);
 		pacientPanel.setBackground(Color.LIGHT_GRAY);
 		pacientPanel.setBorder(BorderFactory.createLineBorder(Color.black, 2));
-		DoctorView.doctorFrame.add(pacientPanel);
+		DoctorPerspectiveView.doctorFrame.add(pacientPanel);
 	}
 
 	private void northPanel() {
@@ -88,7 +88,7 @@ public class PacientView {
 	}
 
 	private void titleLabel() {
-		titleLabel = new JLabel("Pacients");
+		titleLabel = new JLabel("Patients");
 		titleLabel.setBounds(0, 30, 980, 55);
 		titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		titleLabel.setFont(new Font("Tahoma", Font.BOLD, 30));
@@ -96,7 +96,7 @@ public class PacientView {
 	}
 
 	private void addPacientButton() {
-		addPacientButton = new JButton("Add New Pacient");
+		addPacientButton = new JButton("Add New Patient");
 		addPacientButton.setBounds(800, 100, 130, 30);
 		northPanel.add(addPacientButton);
 	}
@@ -109,7 +109,7 @@ public class PacientView {
 	}
 
 	private void deletePacientButton() {
-		deletePacientButton = new JButton("Delete Pacient");
+		deletePacientButton = new JButton("Delete Patient");
 		deletePacientButton.setBounds(600, 100, 130, 30);
 		deletePacientButton.setEnabled(false);
 		northPanel.add(deletePacientButton);
