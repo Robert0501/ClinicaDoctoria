@@ -1,11 +1,9 @@
-package patient_view;
+package view_patient;
 
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -13,8 +11,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.RowSorter;
-import javax.swing.SortOrder;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
@@ -22,39 +18,39 @@ import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
+import controller_patient.PatientAppointmentController;
+import controller_unlogin.LoginController;
 import database.Database;
-import doctor_controller.LoginController;
-import patient_controller.TestHistoryController;
 
-public class TestHistoryView {
-	public static JPanel testHistoryPanel;
+public class PatientAppointmentsView {
+	public static JPanel patientAppointmentsPanel;
 	public static JPanel northPanel;
 	public static JPanel centerPanel;
-
-	public static JButton downloadTestResultsButton;
-
-	private JLabel titleLabel;
 
 	public static DefaultTableModel model;
 	public static JTable table;
 	public static TableRowSorter<TableModel> rowSorter;
 
-	public TestHistoryView() {
-		testHistoryPanel();
-		northPanel();
-		downloadTestResults();
-		centerPanel();
+	public static JButton makeNewAppointment;
 
-		new TestHistoryController();
+	private JLabel titleLabel;
+
+	public PatientAppointmentsView() {
+		patientAppointmentsPanel();
+		northPanel();
+		centerPanel();
+		makeNewAppointment();
+
+		new PatientAppointmentController();
 	}
 
-	private void testHistoryPanel() {
-		testHistoryPanel = new JPanel();
-		testHistoryPanel.setLayout(new FlowLayout());
-		testHistoryPanel.setVisible(false);
-		testHistoryPanel.setBackground(Color.LIGHT_GRAY);
-		testHistoryPanel.setBorder(BorderFactory.createLineBorder(Color.black, 2));
-		PatientPerspectiveView.patientFrame.add(testHistoryPanel);
+	private void patientAppointmentsPanel() {
+		patientAppointmentsPanel = new JPanel();
+		patientAppointmentsPanel.setLayout(new FlowLayout());
+		patientAppointmentsPanel.setVisible(false);
+		patientAppointmentsPanel.setBackground(Color.LIGHT_GRAY);
+		patientAppointmentsPanel.setBorder(BorderFactory.createLineBorder(Color.black, 2));
+		PatientPerspectiveView.patientFrame.add(patientAppointmentsPanel);
 	}
 
 	private void northPanel() {
@@ -62,7 +58,7 @@ public class TestHistoryView {
 		northPanel.setLayout(null);
 		northPanel.setPreferredSize(new Dimension(950, 150));
 		northPanel.setBackground(Color.LIGHT_GRAY);
-		testHistoryPanel.add(northPanel);
+		patientAppointmentsPanel.add(northPanel);
 
 		titleLabel();
 	}
@@ -70,28 +66,21 @@ public class TestHistoryView {
 	private void centerPanel() {
 		centerPanel = new JPanel();
 		centerPanel.setBackground(Color.black);
-		testHistoryPanel.add(centerPanel);
+		patientAppointmentsPanel.add(centerPanel);
 
 		tableConfig();
 	}
 
 	private void titleLabel() {
-		titleLabel = new JLabel("Tests History");
+		titleLabel = new JLabel("Appointments");
 		titleLabel.setBounds(0, 30, 980, 55);
 		titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		titleLabel.setFont(new Font("Tahoma", Font.BOLD, 30));
 		northPanel.add(titleLabel);
 	}
 
-	private void downloadTestResults() {
-		downloadTestResultsButton = new JButton("Download Result");
-		downloadTestResultsButton.setBounds(800, 100, 130, 30);
-		downloadTestResultsButton.setEnabled(false);
-		northPanel.add(downloadTestResultsButton);
-	}
-
 	private void tableConfig() {
-		String[] tableHeader = { "Date", "Time", "Document" };
+		String[] tableHeader = { "Date", "Time", "Reason", "Status" };
 
 		model = new DefaultTableModel(tableHeader, 0);
 		table = new JTable(model);
@@ -106,18 +95,16 @@ public class TestHistoryView {
 
 		centerTableCells();
 
-		Database.showTestResults((LoginController.loggedInEmail));
 		rowSorter = new TableRowSorter<>(table.getModel());
 		table.setRowSorter(rowSorter);
 		table.getTableHeader().setReorderingAllowed(false);
-		sortTableByDate();
 		centerPanel.add(new JScrollPane(table));
 	}
 
-	private void sortTableByDate() {
-		List<RowSorter.SortKey> sortKeys = new ArrayList<>(25);
-		sortKeys.add(new RowSorter.SortKey(2, SortOrder.DESCENDING));
-		rowSorter.setSortKeys(sortKeys);
+	private void makeNewAppointment() {
+		makeNewAppointment = new JButton("New Appointment");
+		makeNewAppointment.setBounds(800, 100, 130, 30);
+		northPanel.add(makeNewAppointment);
 	}
 
 	private void centerTableHeader() {
@@ -136,7 +123,8 @@ public class TestHistoryView {
 		TableColumnModel tcm = table.getColumnModel();
 		tcm.getColumn(0).setPreferredWidth(100); // Date
 		tcm.getColumn(1).setPreferredWidth(100); // Time
-		tcm.getColumn(2).setPreferredWidth(700); // Document
+		tcm.getColumn(2).setPreferredWidth(500); // Reason
+		tcm.getColumn(3).setPreferredWidth(200); // Status
 
 		for (int i = 0; i < 3; i++) {
 			tcm.getColumn(i).setResizable(false);

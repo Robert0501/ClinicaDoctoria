@@ -3,8 +3,8 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import database.Database;
-import doctor_view.LoginView;
 import email.Email;
+import view_unlogin.LoginView;
 
 public class Main {
 
@@ -25,6 +25,8 @@ public class Main {
 		new LoginView();
 		new Email();
 		new Database();
+
+		// new CreateNewAppointmentView();
 
 	}
 

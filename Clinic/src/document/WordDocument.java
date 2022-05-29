@@ -20,7 +20,7 @@ import com.spire.doc.documents.TableRowHeightType;
 import com.spire.doc.documents.VerticalAlignment;
 import com.spire.doc.fields.TextRange;
 
-import doctor_controller.PacientDetailController;
+import controller_doctor.PacientDetailController;
 
 public class WordDocument {
 
@@ -230,7 +230,7 @@ public class WordDocument {
 
 	private void pacientBasicResult() {
 		pacientBasicResults = detailsSection.addParagraph();
-		pacientBasicResults.appendText("Patient Basic Tests Results");
+		pacientBasicResults.appendText("Basic Tests Results");
 		pacientBasicResults.applyStyle("patientDetailStyle");
 		pacientBasicResults.getFormat().setHorizontalAlignment(HorizontalAlignment.Center);
 		pacientBasicResults.getFormat().setAfterSpacing(25f);
@@ -279,7 +279,7 @@ public class WordDocument {
 
 	private void pacientFullResults() {
 		pacientFullResults = detailsSection.addParagraph();
-		pacientFullResults.appendText("Patient Tests Results");
+		pacientFullResults.appendText("Tests Results");
 		pacientFullResults.applyStyle("patientDetailStyle");
 		pacientFullResults.getFormat().setHorizontalAlignment(HorizontalAlignment.Center);
 		pacientFullResults.getFormat().setAfterSpacing(25f);

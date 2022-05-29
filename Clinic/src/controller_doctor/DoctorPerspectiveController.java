@@ -1,4 +1,4 @@
-package doctor_controller;
+package controller_doctor;
 
 import java.awt.Graphics2D;
 import java.awt.event.MouseAdapter;
@@ -7,11 +7,15 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.ImageIcon;
 
-import doctor_view.DoctorPerspectiveView;
-import doctor_view.LoginView;
-import doctor_view.PacientView;
-import doctor_view.ProfileView;
+import controller_unlogin.LoginController;
+import database.Database;
 import helper.ViewClass;
+import view_doctor.DoctorAppointmentsView;
+import view_doctor.DoctorMessagesView;
+import view_doctor.DoctorPerspectiveView;
+import view_doctor.PacientView;
+import view_doctor.ProfileView;
+import view_unlogin.LoginView;
 
 public class DoctorPerspectiveController {
 
@@ -19,6 +23,8 @@ public class DoctorPerspectiveController {
 		logoutButton();
 		profileButton();
 		pacientButton();
+		appointmentButton();
+		messagesButton();
 	}
 
 	private void logoutButton() {
@@ -82,6 +88,34 @@ public class DoctorPerspectiveController {
 						ProfileView.profilePanel.setVisible(false);
 					}
 					PacientView.pacientPanel.setVisible(true);
+				}
+			}
+		});
+	}
+
+	private void messagesButton() {
+		DoctorPerspectiveView.messagesButton.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				if (!ViewClass.doctorMessagesView) {
+					new DoctorMessagesView();
+					ViewClass.doctorMessagesView = true;
+				} else {
+					DoctorMessagesView.messagePanel.setVisible(true);
+				}
+			}
+		});
+	}
+
+	private void appointmentButton() {
+		DoctorPerspectiveView.appointmentsButton.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				if (!ViewClass.doctorAppointmentView) {
+					new DoctorAppointmentsView();
+					ViewClass.doctorAppointmentView = true;
+				} else {
+					DoctorAppointmentsView.tableModel.setRowCount(0);
+					Database.showDoctorAppointments(LoginController.loggedInEmail);
+					DoctorAppointmentsView.doctorAppointmentsPanel.setVisible(true);
 				}
 			}
 		});

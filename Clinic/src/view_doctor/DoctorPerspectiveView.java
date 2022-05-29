@@ -1,4 +1,4 @@
-package doctor_view;
+package view_doctor;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -15,9 +15,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import controller_doctor.DoctorPerspectiveController;
+import controller_unlogin.LoginController;
 import database.Database;
-import doctor_controller.DoctorPerspectiveController;
-import doctor_controller.LoginController;
 
 public class DoctorPerspectiveView {
 	public static JFrame doctorFrame;

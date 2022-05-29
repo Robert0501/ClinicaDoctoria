@@ -1,4 +1,4 @@
-package doctor_view;
+package view_doctor;
 
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -11,7 +11,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import doctor_controller.PacientDetailController;
+import controller_doctor.PacientDetailController;
 
 public class PacientDetailView {
 

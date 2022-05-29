@@ -1,4 +1,4 @@
-package doctor_controller;
+package controller_unlogin;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -9,12 +9,12 @@ import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 
 import database.Database;
-import doctor_view.DoctorPerspectiveView;
-import doctor_view.LoginView;
-import doctor_view.RegisterView;
 import helper.ViewClass;
-import patient_view.PatientPerspectiveView;
 import regex.RegEx;
+import view_doctor.DoctorPerspectiveView;
+import view_patient.PatientPerspectiveView;
+import view_unlogin.LoginView;
+import view_unlogin.RegisterView;
 
 public class LoginController {
 

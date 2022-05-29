@@ -1,4 +1,4 @@
-package doctor_view;
+package view_unlogin;
 
 import java.awt.Color;
 import java.awt.Cursor;
@@ -13,7 +13,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
-import doctor_controller.RegisterController;
+import controller_unlogin.RegisterController;
 
 public class RegisterView {
 

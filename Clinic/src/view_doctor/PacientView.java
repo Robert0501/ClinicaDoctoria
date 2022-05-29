@@ -1,4 +1,4 @@
-package doctor_view;
+package view_doctor;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -23,9 +23,9 @@ import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
+import controller_doctor.PacientController;
+import controller_unlogin.LoginController;
 import database.Database;
-import doctor_controller.LoginController;
-import doctor_controller.PacientController;
 import helper.HintTextFieldUI;
 
 public class PacientView {

@@ -1,4 +1,4 @@
-package doctor_view;
+package view_doctor;
 
 import java.awt.Color;
 import java.awt.Cursor;
@@ -11,10 +11,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import controller_doctor.DoctorPerspectiveController;
+import controller_doctor.ProfileController;
+import controller_unlogin.LoginController;
 import database.Database;
-import doctor_controller.DoctorPerspectiveController;
-import doctor_controller.LoginController;
-import doctor_controller.ProfileController;
 
 public class ProfileView {
 	public static JPanel profilePanel;

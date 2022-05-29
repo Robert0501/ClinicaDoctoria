@@ -1,4 +1,4 @@
-package doctor_controller;
+package controller_doctor;
 
 import java.awt.Graphics2D;
 import java.awt.event.MouseAdapter;
@@ -12,10 +12,11 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileSystemView;
 
+import controller_unlogin.LoginController;
 import database.Database;
-import doctor_view.DoctorPerspectiveView;
-import doctor_view.ProfileView;
 import regex.RegEx;
+import view_doctor.DoctorPerspectiveView;
+import view_doctor.ProfileView;
 
 public class ProfileController {
 

@@ -17,10 +17,12 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
+import controller_patient.PatientEmailSenderController;
 import database.Database;
-import doctor_view.NewPacientView;
-import doctor_view.PacientDetailView;
 import document.WordDocument;
+import view_doctor.NewPacientView;
+import view_doctor.PacientDetailView;
+import view_patient.PatientEmailSenderView;
 
 public class Email {
 
@@ -73,7 +75,11 @@ public class Email {
 				Message testResultsEmail = testResultsEmail(session, myAccountEmail, recepient);
 				Transport.send(testResultsEmail);
 				break;
-
+			case 6:
+				Message patientEmailSent = patientEmailSent(session, myAccountEmail, recepient,
+						PatientEmailSenderView.emailSubjectIn.getText(), PatientEmailSenderView.email.getText());
+				Transport.send(patientEmailSent);
+				break;
 			}
 		} catch (MessagingException e) {
 			e.printStackTrace();
@@ -176,6 +182,22 @@ public class Email {
 			multipart.addBodyPart(attachment);
 			message.setContent(multipart);
 
+			return message;
+
+		} catch (MessagingException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	private static Message patientEmailSent(Session session, String myAccountEmail, String recepient, String subject,
+			String text) {
+		Message message = new MimeMessage(session);
+		try {
+			message.setFrom(new InternetAddress(myAccountEmail));
+			message.setRecipient(Message.RecipientType.TO, new InternetAddress(recepient));
+			message.setSubject(subject);
+			message.setText(text);
 			return message;
 
 		} catch (MessagingException e) {

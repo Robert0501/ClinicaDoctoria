@@ -1,9 +1,10 @@
 package email;
 
-import doctor_controller.ForgotPasswordController;
-import doctor_view.NewPacientView;
-import doctor_view.PacientDetailView;
-import doctor_view.RegisterView;
+import controller_unlogin.ForgotPasswordController;
+import view_doctor.NewPacientView;
+import view_doctor.PacientDetailView;
+import view_patient.PatientEmailSenderView;
+import view_unlogin.RegisterView;
 
 public class EmailThread extends Thread {
 	public void run() {
@@ -29,6 +30,9 @@ public class EmailThread extends Thread {
 			Email.sendMail(PacientDetailView.emailIn.getText());
 			Email.position++;
 			break;
+		case 6:
+			Email.sendMail(PatientEmailSenderView.emailToIn.getText());
+			Email.position++;
 		}
 	}
 }

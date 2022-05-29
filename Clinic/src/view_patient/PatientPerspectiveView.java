@@ -1,4 +1,4 @@
-package patient_view;
+package view_patient;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -14,7 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import patient_controller.PatientPerspectiveController;
+import controller_patient.PatientPerspectiveController;
 
 public class PatientPerspectiveView {
 
@@ -22,13 +22,13 @@ public class PatientPerspectiveView {
 	public static JPanel navbarPanel;
 	public static JPanel photoPanel;
 
-	public static JLabel patientName = new JLabel("Robert-Ionut");
+	public static JLabel patientName = new JLabel("");
 	public static JLabel patientPhoto = new JLabel("");
 
-	public static JLabel dashboardButton = new JLabel("Dashboard");
+	public static JLabel messageToDoctorButton = new JLabel("Messages");
 	public static JLabel appointmentsButton = new JLabel("Make Appointment");
 	public static JLabel testHistoryButton = new JLabel("Test History");
-	public static JLabel messagesButton = new JLabel("Messages");
+	public static JLabel contactDoctorButton = new JLabel("Contact Doctor");
 	public static JLabel profileButton = new JLabel("Profile");
 	public static JLabel logoutButton = new JLabel("Logout");
 
@@ -54,10 +54,11 @@ public class PatientPerspectiveView {
 		navbarPanel.setPreferredSize(new Dimension(300, 700));
 		photoPanel();
 		patientName();
-		putNavbarButtons(dashboardButton);
+
 		putNavbarButtons(appointmentsButton);
 		putNavbarButtons(testHistoryButton);
-		putNavbarButtons(messagesButton);
+		putNavbarButtons(contactDoctorButton);
+		putNavbarButtons(messageToDoctorButton);
 		putNavbarButtons(profileButton);
 		putNavbarButtons(logoutButton);
 		patientFrame.add(navbarPanel, BorderLayout.WEST);

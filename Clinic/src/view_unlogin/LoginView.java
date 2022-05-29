@@ -1,4 +1,4 @@
-package doctor_view;
+package view_unlogin;
 
 import java.awt.Color;
 import java.awt.Cursor;
@@ -13,8 +13,8 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
-import doctor_controller.ForgotPasswordController;
-import doctor_controller.LoginController;
+import controller_unlogin.ForgotPasswordController;
+import controller_unlogin.LoginController;
 
 public class LoginView {
 

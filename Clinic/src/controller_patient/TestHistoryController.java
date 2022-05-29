@@ -1,17 +1,10 @@
-package patient_controller;
+package controller_patient;
 
 import java.awt.Desktop;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import javax.swing.JFileChooser;
 import javax.swing.event.ListSelectionEvent;
@@ -20,14 +13,12 @@ import javax.swing.filechooser.FileSystemView;
 
 import org.apache.commons.io.FileUtils;
 
-import database.Database;
-import patient_view.TestHistoryView;
+import view_patient.TestHistoryView;
 
 public class TestHistoryController {
 
 	public static JFileChooser fileChooser = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
 	private String path;
-	private String file_name;
 
 	public TestHistoryController() {
 		getSelectedPacient();

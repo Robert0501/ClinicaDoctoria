@@ -1,4 +1,4 @@
-package doctor_controller;
+package controller_unlogin;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -8,15 +8,15 @@ import java.awt.event.MouseEvent;
 import javax.swing.JOptionPane;
 
 import database.Database;
-import doctor_view.AddressRegisterView;
-import doctor_view.LoginView;
-import doctor_view.RegisterView;
 import email.Email;
 import helper.Code;
 import helper.ViewClass;
 import model.Doctor;
 import model.User;
 import regex.RegEx;
+import view_unlogin.AddressRegisterView;
+import view_unlogin.LoginView;
+import view_unlogin.RegisterView;
 
 public class RegisterController {
 

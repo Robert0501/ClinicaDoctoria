@@ -1,4 +1,4 @@
-package doctor_controller;
+package controller_doctor;
 
 import java.awt.Color;
 import java.awt.event.MouseAdapter;
@@ -9,12 +9,13 @@ import java.util.Date;
 
 import javax.swing.JOptionPane;
 
+import controller_unlogin.LoginController;
 import database.Database;
-import doctor_view.PacientDetailView;
 import document.WordDocument;
 import email.Email;
 import model.MedicalResults;
 import model.Pacient;
+import view_doctor.PacientDetailView;
 
 public class PacientDetailController {
 
