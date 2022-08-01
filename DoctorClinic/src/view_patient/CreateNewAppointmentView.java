@@ -10,6 +10,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 import com.toedter.calendar.JDateChooser;
@@ -28,7 +29,8 @@ public class CreateNewAppointmentView {
 	private JLabel timeLabel;
 
 	public static JComboBox<?> hourComboBox;
-	String[] hourChooses = { "Choose a time stamp", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00" };
+	String[] hourChooses = { "Choose a time stamp", "09:00", "09:15", "09:30", "09:45", "10:00", "10,15", "10:30",
+			"10:45", "11:00", "11:15", "11:30", "11:45", "12:00" };
 
 	public static JComboBox<?> reasonComboBox;
 	String[] reasonChooses = { "Choose a reason", "Skin Disorders", "Joint Pain And Osteoarthritis", "Back Problems",
@@ -37,6 +39,8 @@ public class CreateNewAppointmentView {
 			"Consulation" };
 
 	public static String appointmentDate;
+
+	public static JDateChooser date;
 
 	public CreateNewAppointmentView() {
 		newAppointmentFrame();
@@ -95,20 +99,13 @@ public class CreateNewAppointmentView {
 		dateLabel.setFont(new Font("Arial", Font.PLAIN, 14));
 		newAppointmentFrame.add(dateLabel);
 
-		JDateChooser date = new JDateChooser();
+		date = new JDateChooser();
 		date.setBounds(50, 200, 175, 25);
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");
 		LocalDateTime now = LocalDateTime.now();
 		date.setDate(new Date(dtf.format(now)));
 		newAppointmentFrame.add(date);
-		java.util.Date d = date.getDate();
-		if (d == null) {
-			System.out.println("No date specified!");
-		} else {
-			java.sql.Date sqldate = new java.sql.Date(d.getTime());
-			System.out.println(sqldate);
-			appointmentDate = String.valueOf(sqldate);
-		}
+
 	}
 
 	private void makeAppointmentButton() {

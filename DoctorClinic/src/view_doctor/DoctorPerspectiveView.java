@@ -18,11 +18,11 @@ import javax.swing.SwingConstants;
 import controller_doctor.DoctorPerspectiveController;
 import controller_unlogin.LoginController;
 import database.Database;
+import helper.ViewClass;
 
 public class DoctorPerspectiveView {
 	public static JFrame doctorFrame;
 	public static JPanel navbarPanel;
-	public static JPanel photoPanel;
 
 	public static JPanel dashboardPanel;
 	public static JPanel appointmentsPanel;
@@ -32,7 +32,7 @@ public class DoctorPerspectiveView {
 
 	public static JLabel dashboardButton = new JLabel("Dashboard");
 	public static JLabel appointmentsButton = new JLabel("Appointments");
-	public static JLabel pacientsButton = new JLabel("Pacients");
+	public static JLabel pacientsButton = new JLabel("Patients");
 	public static JLabel messagesButton = new JLabel("Messages");
 	public static JLabel profileButton = new JLabel("Profile");
 	public static JLabel logoutButton = new JLabel("Logout");
@@ -44,15 +44,24 @@ public class DoctorPerspectiveView {
 		doctorFrame();
 		navbarPanel();
 
+		if (!ViewClass.pacientView) {
+			ViewClass.setDoctorViewsToFalse();
+			new PacientView();
+			ViewClass.pacientView = true;
+		} else {
+			ViewClass.setDoctorViewsToFalse();
+			PacientView.pacientPanel.setVisible(true);
+		}
+
 		new DoctorPerspectiveController();
 
 	}
 
-	public static void updateDataOnRelogin() {
-		docPhoto.setIcon(DoctorPerspectiveController
-				.resizeImageIcon(new ImageIcon(Database.getProfilePhotoPath(LoginController.loggedInEmail))));
-		nameLabel.setText("Dr. " + Database.getDoctorName(LoginController.loggedInEmail));
-	}
+//	public static void updateDataOnRelogin() {
+//		docPhoto.setIcon(DoctorPerspectiveController
+//				.resizeImageIcon(new ImageIcon(Database.getProfilePhotoPath(LoginController.loggedInEmail))));
+//		nameLabel.setText("Dr. " + Database.getDoctorName(LoginController.loggedInEmail));
+//	}
 
 	private void doctorFrame() {
 		doctorFrame = new JFrame("Clinica Doctoria");
@@ -69,7 +78,7 @@ public class DoctorPerspectiveView {
 		navbarPanel.setBackground(Color.decode("#3A7254"));
 		navbarPanel.setPreferredSize(new Dimension(300, 700));
 
-		photoPanel();
+		docPhoto();
 		doctorName();
 		putNavbarButtons(dashboardButton);
 		putNavbarButtons(appointmentsButton);
@@ -80,25 +89,18 @@ public class DoctorPerspectiveView {
 		doctorFrame.add(navbarPanel, BorderLayout.WEST);
 	}
 
-	private static void photoPanel() {
-		photoPanel = new JPanel();
-		photoPanel.setPreferredSize(new Dimension(250, 180));
-		navbarPanel.add(photoPanel);
-
-		docPhoto();
-	}
-
-	private static void doctorName() {
+	private void doctorName() {
 		nameLabel.setFont(new Font("Tahoma", Font.BOLD, 24));
 		nameLabel.setText("Dr. " + Database.getDoctorName(LoginController.loggedInEmail));
 		navbarPanel.add(nameLabel);
 	}
 
-	private static void docPhoto() {
+	private void docPhoto() {
 		docPhoto = new JLabel();
+		docPhoto.setPreferredSize(new Dimension(250, 180));
 		docPhoto.setIcon(DoctorPerspectiveController
 				.resizeImageIcon(new ImageIcon(Database.getProfilePhotoPath(LoginController.loggedInEmail))));
-		photoPanel.add(docPhoto);
+		navbarPanel.add(docPhoto);
 	}
 
 	private void putNavbarButtons(JLabel label) {

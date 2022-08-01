@@ -9,6 +9,7 @@ import javax.swing.JOptionPane;
 
 import controller_unlogin.LoginController;
 import database.Database;
+import database.InsertDatabase;
 import email.Email;
 import view_patient.PatientEmailSenderView;
 
@@ -47,7 +48,7 @@ public class PatientEmailSenderController {
 			public void mouseClicked(MouseEvent e) {
 				Email.index = 6;
 				Email.email[Email.position].start();
-				Database.insertIntoMessageTable(PatientEmailSenderView.emailFromIn.getText(),
+				InsertDatabase.insertIntoMessageTable(PatientEmailSenderView.emailFromIn.getText(),
 						PatientEmailSenderView.emailToIn.getText(), PatientEmailSenderView.emailSubjectIn.getText(),
 						PatientEmailSenderView.email.getText(), getCurrentDate(), getCurrentHour(),
 						Database.getPatientName(LoginController.loggedInEmail));

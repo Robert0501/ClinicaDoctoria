@@ -53,6 +53,7 @@ public class PacientController {
 					cnp = PacientView.table.getValueAt(PacientView.table.getSelectedRow(), 2).toString();
 					name = PacientView.table.getValueAt(PacientView.table.getSelectedRow(), 0).toString() + " "
 							+ PacientView.table.getValueAt(PacientView.table.getSelectedRow(), 1).toString();
+					System.out.println(cnp + "  " + name);
 				}
 			}
 		});
@@ -65,10 +66,11 @@ public class PacientController {
 				int option = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete " + name + "?",
 						"Delete Pacient", JOptionPane.YES_NO_OPTION);
 				if (option == JOptionPane.YES_OPTION) {
-					Database.deletePacient(cnp, LoginController.loggedInEmail);
-
 					if (PacientView.table.getSelectedRow() != -1) {
+						System.out.println(PacientView.table.getSelectedRow());
+						// Database.deletePacient(cnp, LoginController.loggedInEmail);
 						PacientView.model.removeRow(PacientView.table.getSelectedRow());
+
 					}
 				}
 			}

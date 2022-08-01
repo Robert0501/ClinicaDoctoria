@@ -3,13 +3,12 @@ package helper;
 import view_doctor.DoctorAppointmentsView;
 import view_doctor.DoctorDashboardView;
 import view_doctor.DoctorMessagesView;
-import view_doctor.DoctorPerspectiveView;
-import view_doctor.DoctorShowMessageView;
 import view_doctor.PacientView;
 import view_doctor.ProfileView;
 import view_patient.ContactDoctorView;
-import view_patient.PacientMessageView;
 import view_patient.PatientAppointmentsView;
+import view_patient.PatientMessageView;
+import view_patient.PatientProfileView;
 import view_patient.TestHistoryView;
 
 public class ViewClass {
@@ -37,6 +36,30 @@ public class ViewClass {
 	public static boolean patientShowMessageView = false;
 	public static boolean patientProfileView = false;
 
+	public static void doctorPerspectiveRefresh() {
+		doctorView = false;
+		newPacientView = false;
+		pacientDetailView = false;
+		pacientView = false;
+		profileView = false;
+		doctorAppointmentView = false;
+		doctorMessagesView = false;
+		doctorMessageView = false;
+		doctorEmailSenderView = false;
+		dashboardView = false;
+	}
+
+	public static void patientPerspectiveRefresh() {
+		patientView = false;
+		testHistoryView = false;
+		patientAppointmentsView = false;
+		patientContactDoctorView = false;
+		patientEmailSenderFrame = false;
+		patientMessageView = false;
+		patientShowMessageView = false;
+		patientProfileView = false;
+	}
+
 	public static void setDoctorViewsToFalse() {
 		if (dashboardView) {
 			DoctorDashboardView.dashboardPanel.setVisible(false);
@@ -59,7 +82,7 @@ public class ViewClass {
 
 	public static void setPatientViewsOnFalse() {
 		if (patientMessageView) {
-			PacientMessageView.messagePanel.setVisible(false);
+			PatientMessageView.messagePanel.setVisible(false);
 		}
 		if (patientAppointmentsView) {
 			PatientAppointmentsView.patientAppointmentsPanel.setVisible(false);
@@ -71,7 +94,7 @@ public class ViewClass {
 			ContactDoctorView.contactDoctorPanel.setVisible(false);
 		}
 		if (patientProfileView) {
-
+			PatientProfileView.profilePanel.setVisible(false);
 		}
 	}
 

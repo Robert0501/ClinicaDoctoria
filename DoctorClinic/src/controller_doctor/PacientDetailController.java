@@ -1,20 +1,24 @@
 package controller_doctor;
 
 import java.awt.Color;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 import controller_unlogin.LoginController;
 import database.Database;
+import database.InsertDatabase;
 import document.WordDocument;
 import email.Email;
 import model.MedicalResults;
-import model.Pacient;
+import model.Patient;
 import view_doctor.PacientDetailView;
 
 public class PacientDetailController {
@@ -39,13 +43,24 @@ public class PacientDetailController {
 		autocompletePersonalDetailsField();
 		autocompleteMedicalResults();
 		colorWrongValues();
+		calculateIMC();
 		saveDataButton();
 		downloadTestResults();
 
 	}
 
+	private static void putTitle() {
+		String cnp = PacientDetailView.cnpIn.getText();
+		char first = cnp.charAt(0);
+		if (first == '1' || first == '5') {
+			PacientDetailView.titleIn.setText("M");
+		} else {
+			PacientDetailView.titleIn.setText("F");
+		}
+	}
+
 	public static void autocompletePersonalDetailsField() {
-		Pacient selectedPacient = Database.getPacientDetails(PacientController.cnp);
+		Patient selectedPacient = Database.getPacientDetails(PacientController.cnp);
 		PacientDetailView.firstNameIn.setText(selectedPacient.getFirstName());
 		PacientDetailView.lastNameIn.setText(selectedPacient.getLastName());
 		PacientDetailView.cnpIn.setText(selectedPacient.getCNP());
@@ -53,6 +68,8 @@ public class PacientDetailController {
 		PacientDetailView.fullAddressIn.setText(selectedPacient.getCountry() + " " + selectedPacient.getAddress());
 		PacientDetailView.emailIn.setText(selectedPacient.getEmail());
 		PacientDetailView.phoneNumberIn.setText(selectedPacient.getPhoneNumber());
+		putPatientPhoto();
+		putTitle();
 	}
 
 	public static void autocompleteMedicalResults() {
@@ -76,6 +93,8 @@ public class PacientDetailController {
 		PacientDetailView.urinaryProteinIn.setText(medicalResults.getUrinary_protein());
 		PacientDetailView.urinaryCreatinineIn.setText(medicalResults.getUrinary_creatinine());
 		PacientDetailView.riskFactorIn.setText(medicalResults.getRisk_factor());
+
+		putImc();
 
 	}
 
@@ -144,14 +163,48 @@ public class PacientDetailController {
 				JOptionPane.showMessageDialog(null, "Test Results has been successfully sent via email",
 						"Test Results Successfully Sent", JOptionPane.INFORMATION_MESSAGE);
 
-				Database.insertIntoTestHistoryTable(PacientDetailView.emailIn.getText(), LoginController.loggedInEmail,
-						WordDocument.path + WordDocument.name, WordDocument.name, getCurrentDate(), getCurrentHour());
+				InsertDatabase.insertIntoTestHistoryTable(PacientDetailView.emailIn.getText(),
+						LoginController.loggedInEmail, WordDocument.path + WordDocument.name, WordDocument.name,
+						getCurrentDate(), getCurrentHour());
 			}
 		});
 	}
 
-	private double computeImc(double height, double weight) {
-		return weight / Math.pow(height, 2);
+	private static double computeImc(double height, double weight) {
+		if (height == 0) {
+			return 0;
+		}
+		return (weight / Math.pow(height, 2)) * 10000;
+	}
+
+	private static void putPatientPhoto() {
+		PacientDetailView.photo.setIcon(DoctorPerspectiveController
+				.resizeImageIcon(new ImageIcon(Database.getProfilePhotoPath(PacientDetailView.emailIn.getText()))));
+	}
+
+	private static void putImc() {
+		try {
+			String imc = String.valueOf(computeImc(Double.parseDouble(PacientDetailView.heightIn.getText()),
+					Double.parseDouble(PacientDetailView.weightIn.getText())));
+			imc = imc.substring(0, 5);
+			PacientDetailView.IMCIn.setText(imc);
+		} catch (Exception e) {
+			PacientDetailView.IMCIn.setText("0");
+		}
+	}
+
+	private void calculateIMC() {
+		PacientDetailView.weightIn.addFocusListener(new FocusAdapter() {
+			public void focusLost(FocusEvent e) {
+				putImc();
+			}
+		});
+
+		PacientDetailView.heightIn.addFocusListener(new FocusAdapter() {
+			public void focusLost(FocusEvent e) {
+				putImc();
+			}
+		});
 	}
 
 	public static void colorWrongValues() {

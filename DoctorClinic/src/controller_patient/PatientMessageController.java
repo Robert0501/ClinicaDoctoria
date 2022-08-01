@@ -10,7 +10,7 @@ import controller_unlogin.LoginController;
 import database.Database;
 import email.Email;
 import helper.ViewClass;
-import view_patient.PacientMessageView;
+import view_patient.PatientMessageView;
 import view_patient.PatientEmailSenderView;
 import view_patient.PatientShowMessageView;
 
@@ -29,13 +29,13 @@ public class PatientMessageController {
 	}
 
 	private void openMessage() {
-		PacientMessageView.table.addMouseListener(new MouseAdapter() {
+		PatientMessageView.table.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
 				table = (JTable) e.getSource();
 				Point point = e.getPoint();
 				int row = table.rowAtPoint(point);
 				if (e.getClickCount() == 1 && table.getSelectedRow() != -1) {
-					PacientMessageView.replayButton.setEnabled(true);
+					PatientMessageView.replayButton.setEnabled(true);
 				}
 				if (e.getClickCount() == 2 && table.getSelectedRow() != -1) {
 					if (!ViewClass.patientShowMessageView) {
@@ -83,7 +83,7 @@ public class PatientMessageController {
 	}
 
 	private void replayButton() {
-		PacientMessageView.replayButton.addMouseListener(new MouseAdapter() {
+		PatientMessageView.replayButton.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 				if (!ViewClass.patientEmailSenderFrame) {
 					new PatientEmailSenderView();

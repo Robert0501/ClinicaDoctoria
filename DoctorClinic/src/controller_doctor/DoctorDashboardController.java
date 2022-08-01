@@ -57,7 +57,7 @@ public class DoctorDashboardController {
 		return 0;
 	}
 
-	private static String getMonth(int month) {
+	public static String getMonth(int month) {
 		switch (month) {
 		case 1:
 			return "Jan";
@@ -105,15 +105,26 @@ public class DoctorDashboardController {
 		var dataset = new DefaultCategoryDataset();
 
 		SimpleDateFormat dtf = new SimpleDateFormat("dd.MM");
+		SimpleDateFormat dayFormat = new SimpleDateFormat("dd");
+		SimpleDateFormat monthFormat = new SimpleDateFormat("MM");
+		SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy");
+
 		Date date;
 		String stringDate;
+		String day;
+		String month;
+		String year;
 
 		for (int i = 0; i < 7; i++) {
 			Calendar cal = Calendar.getInstance();
 			cal.add(Calendar.DATE, -i);
 			date = cal.getTime();
 			stringDate = dtf.format(date);
-			dataset.setValue(10, "Patients", stringDate);
+			day = dayFormat.format(date);
+			month = monthFormat.format(date);
+			year = yearFormat.format(date);
+			dataset.setValue(Integer.parseInt(Database.getPatientNumber(LoginController.loggedInEmail, day,
+					getMonth(Integer.parseInt(month)), year)), "Patients", stringDate);
 		}
 
 		return dataset;

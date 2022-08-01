@@ -11,6 +11,7 @@ import javax.swing.JTable;
 
 import controller_unlogin.LoginController;
 import database.Database;
+import database.InsertDatabase;
 import email.Email;
 import helper.ViewClass;
 import view_doctor.DoctorEmailSenderView;
@@ -42,15 +43,8 @@ public class DoctorMessageController {
 					DoctorMessagesView.replayButton.setEnabled(true);
 				}
 				if (e.getClickCount() == 2 && table.getSelectedRow() != -1) {
-					if (!ViewClass.doctorMessageView) {
-						new DoctorShowMessageView();
-						ViewClass.doctorMessageView = true;
-						putDetails();
-					} else {
-						putDetails();
-						ViewClass.setDoctorViewsToFalse();
-						DoctorShowMessageView.messageFrame.setVisible(true);
-					}
+					new DoctorShowMessageView();
+					putDetails();
 				}
 			}
 		});
@@ -142,7 +136,7 @@ public class DoctorMessageController {
 				Email.index = 7;
 				Email.email[Email.position].start();
 				Email.position++;
-				Database.insertIntoMessageTable(DoctorEmailSenderView.emailFromIn.getText(),
+				InsertDatabase.insertIntoMessageTable(DoctorEmailSenderView.emailFromIn.getText(),
 						DoctorEmailSenderView.emailToIn.getText(), DoctorEmailSenderView.emailSubjectIn.getText(),
 						DoctorEmailSenderView.email.getText(), getCurrentDate(), getCurrentHour(),
 						Database.getDoctorName(LoginController.loggedInEmail));

@@ -43,10 +43,8 @@ public class PacientView {
 	public static DefaultTableModel model;
 	public static JTable table;
 	public static TableRowSorter<TableModel> rowSorter;
-	
-	public static JTextField searchField;
 
-	
+	public static JTextField searchField;
 
 	public PacientView() {
 		pacientPanel();
@@ -59,7 +57,7 @@ public class PacientView {
 	private void pacientPanel() {
 		pacientPanel = new JPanel();
 		pacientPanel.setLayout(new FlowLayout());
-		pacientPanel.setVisible(false);
+		pacientPanel.setVisible(true);
 		pacientPanel.setBackground(Color.LIGHT_GRAY);
 		pacientPanel.setBorder(BorderFactory.createLineBorder(Color.black, 2));
 		DoctorPerspectiveView.doctorFrame.add(pacientPanel);
@@ -149,7 +147,7 @@ public class PacientView {
 		rowSorter = new TableRowSorter<>(table.getModel());
 		table.setRowSorter(rowSorter);
 		table.getTableHeader().setReorderingAllowed(false);
-		sortTableByLastName();
+//		sortTableByLastName();
 		centerPanel.add(new JScrollPane(table));
 	}
 

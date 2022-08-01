@@ -121,7 +121,7 @@ public class DoctorPerspectiveController {
 					ViewClass.dashboardView = true;
 				} else {
 					ViewClass.setDoctorViewsToFalse();
-					DoctorDashboardView.dashboardPanel.setVisible(true);
+					new DoctorDashboardView();
 				}
 			}
 		});

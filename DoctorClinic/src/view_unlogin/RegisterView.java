@@ -184,7 +184,7 @@ public class RegisterView {
 	}
 
 	private void registerButton() {
-		registerButton = new JButton("Register");
+		registerButton = new JButton("Next");
 		registerButton.setBounds(100, 465, 100, 30);
 		registerButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		registerFrame.add(registerButton);

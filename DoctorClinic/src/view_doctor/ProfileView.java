@@ -19,7 +19,6 @@ import database.Database;
 public class ProfileView {
 	public static JPanel profilePanel;
 
-	private JPanel photoPanel;
 	public static JLabel profilePhoto;
 
 	private JLabel titleLabel;
@@ -39,8 +38,8 @@ public class ProfileView {
 
 	public ProfileView() {
 		profilePanel();
-		photoPanel();
 		titleLabel();
+		profilePhoto();
 		addLabel(nameLabel);
 		addLabel(clinicName);
 		addLabel(addressLabel);
@@ -63,20 +62,12 @@ public class ProfileView {
 		DoctorPerspectiveView.doctorFrame.add(profilePanel);
 	}
 
-	private void photoPanel() {
-		photoPanel = new JPanel();
-		photoPanel.setVisible(true);
-		photoPanel.setBounds(100, 100, 250, 180);
-		profilePanel.add(photoPanel);
-
-		profilePhoto();
-	}
-
 	private void profilePhoto() {
 		profilePhoto = new JLabel();
+		profilePhoto.setBounds(100, 100, 250, 180);
 		profilePhoto.setIcon(DoctorPerspectiveController
 				.resizeImageIcon(new ImageIcon(Database.getProfilePhotoPath(LoginController.loggedInEmail))));
-		photoPanel.add(profilePhoto);
+		profilePanel.add(profilePhoto);
 	}
 
 	private void titleLabel() {

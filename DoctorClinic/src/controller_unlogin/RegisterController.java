@@ -8,6 +8,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.JOptionPane;
 
 import database.Database;
+import database.InsertDatabase;
 import email.Email;
 import helper.Code;
 import helper.ViewClass;
@@ -174,12 +175,12 @@ public class RegisterController {
 	private void addDoctorToDatabase() {
 		String address = AddressRegisterView.getCountryIn() + " " + AddressRegisterView.getCityIn() + " "
 				+ AddressRegisterView.getStreetIn() + " " + AddressRegisterView.getAddressIn();
-		Database.insertIntoDoctorTABLE(new Doctor(RegisterView.getFirstName(), RegisterView.getLastName(),
+		InsertDatabase.insertIntoDoctorTABLE(new Doctor(RegisterView.getFirstName(), RegisterView.getLastName(),
 				RegisterView.getEmail(), AddressRegisterView.getClinicNameIn()), address);
 	}
 
 	private void addUserToDatabase() {
-		Database.insertIntoUserTable(new User(RegisterView.getEmail(), RegisterView.getPassword(), code), true);
+		InsertDatabase.insertIntoUserTable(new User(RegisterView.getEmail(), RegisterView.getPassword(), code), true);
 	}
 
 	private void loginButton() {

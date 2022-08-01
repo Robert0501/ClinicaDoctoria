@@ -8,6 +8,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 import database.Database;
+import database.InsertDatabase;
 import email.Email;
 import helper.Code;
 import regex.RegEx;
@@ -95,7 +96,7 @@ public class ForgotPasswordController {
 	private void sendEmail() {
 		Email.index = 3;
 		Email.email[Email.position].start();
-		Database.insertIntoPasswordInfoTable(email, Code.generateActivationCode());
+		InsertDatabase.insertIntoPasswordInfoTable(email, Code.generateActivationCode());
 		JOptionPane.showMessageDialog(null, "An email with a code has been sent to " + email);
 	}
 

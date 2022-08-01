@@ -9,18 +9,21 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import controller_doctor.DoctorPerspectiveController;
 import controller_patient.PatientPerspectiveController;
+import controller_unlogin.LoginController;
+import database.Database;
 
 public class PatientPerspectiveView {
 
 	public static JFrame patientFrame;
 	public static JPanel navbarPanel;
-	public static JPanel photoPanel;
 
 	public static JLabel patientName = new JLabel("");
 	public static JLabel patientPhoto = new JLabel("");
@@ -52,7 +55,7 @@ public class PatientPerspectiveView {
 		navbarPanel = new JPanel();
 		navbarPanel.setBackground(Color.decode("#3A7254"));
 		navbarPanel.setPreferredSize(new Dimension(300, 700));
-		photoPanel();
+		patientPhoto();
 		patientName();
 
 		putNavbarButtons(appointmentsButton);
@@ -64,17 +67,17 @@ public class PatientPerspectiveView {
 		patientFrame.add(navbarPanel, BorderLayout.WEST);
 	}
 
-	private static void photoPanel() {
-		photoPanel = new JPanel();
-		photoPanel.setPreferredSize(new Dimension(250, 180));
-		navbarPanel.add(photoPanel);
-
-		photoPanel.add(patientPhoto);
-	}
-
-	private static void patientName() {
+	private void patientName() {
 		patientName.setFont(new Font("Tahoma", Font.BOLD, 24));
 		navbarPanel.add(patientName);
+	}
+
+	private void patientPhoto() {
+		patientPhoto = new JLabel();
+		patientPhoto.setPreferredSize(new Dimension(250, 180));
+		patientPhoto.setIcon(DoctorPerspectiveController
+				.resizeImageIcon(new ImageIcon(Database.getProfilePhotoPath(LoginController.loggedInEmail))));
+		navbarPanel.add(patientPhoto);
 	}
 
 	private void putNavbarButtons(JLabel label) {

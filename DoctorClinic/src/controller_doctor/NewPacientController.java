@@ -1,5 +1,7 @@
 package controller_doctor;
 
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.time.LocalDateTime;
@@ -10,6 +12,7 @@ import javax.swing.JOptionPane;
 import org.postgresql.util.PSQLException;
 
 import database.Database;
+import database.InsertDatabase;
 import email.Email;
 import helper.Code;
 import model.User;
@@ -21,12 +24,9 @@ public class NewPacientController {
 
 	public static boolean pacientExist = false;
 
-	private String day;
-	private String month;
-	private String year;
-
 	public NewPacientController() {
 		addNewPacientButton();
+		insertDOB();
 	}
 
 	private boolean checkNameFields() {
@@ -43,6 +43,27 @@ public class NewPacientController {
 		}
 
 		return true;
+	}
+
+	private void insertDOB() {
+		NewPacientView.cnpIn.addFocusListener(new FocusAdapter() {
+			public void focusLost(FocusEvent e) {
+				if (RegEx.checkCNP(NewPacientView.cnpIn.getText())) {
+					String cnp = NewPacientView.cnpIn.getText();
+					String day = cnp.charAt(5) + "" + cnp.charAt(6);
+					String month = cnp.charAt(3) + "" + cnp.charAt(4);
+					String year;
+					if (cnp.charAt(0) == '1' || cnp.charAt(0) == '2') {
+						year = "19" + cnp.charAt(1) + "" + cnp.charAt(2);
+					} else {
+						year = "20" + cnp.charAt(1) + "" + cnp.charAt(2);
+					}
+					NewPacientView.dateOfBirthIn.setText(day + "." + month + "." + year);
+					NewPacientView.dateOfBirthIn.setEnabled(false);
+
+				}
+			}
+		});
 	}
 
 	private boolean checkPersonalDetailsFields() {
@@ -90,6 +111,13 @@ public class NewPacientController {
 			System.out.println("email");
 			return false;
 		}
+		if (Database.checkDuplicateEmail(NewPacientView.emailIn.getText())) {
+			JOptionPane.showMessageDialog(null, "There is already a patient added with this email", "Alert",
+					JOptionPane.ERROR_MESSAGE);
+			return false;
+
+		}
+
 		if (!RegEx.checkEmail(NewPacientView.emailIn.getText())) {
 			JOptionPane.showMessageDialog(null, "Email format is not correct", "Alert", JOptionPane.ERROR_MESSAGE);
 			System.out.println("Email format");
@@ -146,21 +174,22 @@ public class NewPacientController {
 	}
 
 	private void addDataToDatabase() throws PSQLException {
-		Database.insertIntoPacientTable(NewPacientView.firstNameIn.getText(), NewPacientView.lastNameIn.getText(),
+		InsertDatabase.insertIntoPacientTable(NewPacientView.firstNameIn.getText(), NewPacientView.lastNameIn.getText(),
 				NewPacientView.cnpIn.getText(), NewPacientView.dateOfBirthIn.getText(),
 				NewPacientView.emailIn.getText(), NewPacientView.phoneNumberIn.getText(),
-				NewPacientView.countryIn.getText(), NewPacientView.addressIn.getText(), getCurrentDay(),
-				getCurrentMonth(), getCurrentYear());
+				NewPacientView.countryIn.getText(), NewPacientView.addressIn.getText(),
+				DoctorDashboardController.getMonth(Integer.parseInt(getCurrentMonth())), getCurrentYear(),
+				getCurrentDay());
 
-		Database.insertIntoMedicalTestTable("0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0",
-				"0", "0", "0", "0", NewPacientView.cnpIn.getText());
+		InsertDatabase.insertIntoMedicalTestTable("0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0",
+				"0", "0", "0", "0", "0", NewPacientView.cnpIn.getText());
 	}
 
 	private void createNewUser() {
 		User user = new User(NewPacientView.emailIn.getText(),
 				NewPacientView.firstNameIn.getText() + NewPacientView.lastNameIn.getText(),
 				Code.generateActivationCode());
-		Database.insertIntoUserTable(user, false);
+		InsertDatabase.insertIntoUserTable(user, false);
 		Email.index = 4;
 		Email.email[Email.position].start();
 	}

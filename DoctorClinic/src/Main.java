@@ -4,6 +4,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import database.Database;
 import email.Email;
+import helper.PasswordAuthentication;
 import view_doctor.DoctorDashboardView;
 import view_unlogin.LoginView;
 
@@ -26,6 +27,7 @@ public class Main {
 		new LoginView();
 		new Email();
 		new Database();
+		new PasswordAuthentication();
 
 //		 new DoctorDashboardView();
 

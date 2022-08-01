@@ -14,6 +14,7 @@ import javax.swing.filechooser.FileSystemView;
 
 import controller_unlogin.LoginController;
 import database.Database;
+import helper.PasswordAuthentication;
 import regex.RegEx;
 import view_doctor.DoctorPerspectiveView;
 import view_doctor.ProfileView;
@@ -96,7 +97,8 @@ public class ProfileController {
 	}
 
 	private boolean checkOldPassword() {
-		if (Database.checkCredentials(LoginController.loggedInEmail, oldPassword.getText())) {
+		if (PasswordAuthentication.authenticate(oldPassword.getText(),
+				Database.getPassword(LoginController.loggedInEmail))) {
 			return true;
 		} else {
 			JOptionPane.showMessageDialog(null, "Incorrect old password", "Alert", JOptionPane.ERROR_MESSAGE);
@@ -219,9 +221,10 @@ public class ProfileController {
 				fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 				fileChooser.showSaveDialog(null);
 				photoPath = fileChooser.getSelectedFile().getAbsolutePath();
-				System.out.println(photoPath);
-				ProfileView.profilePhoto.setIcon(DoctorPerspectiveController.resizeImageIcon(new ImageIcon((photoPath))));
-				DoctorPerspectiveView.docPhoto.setIcon(DoctorPerspectiveController.resizeImageIcon(new ImageIcon((photoPath))));
+				ProfileView.profilePhoto
+						.setIcon(DoctorPerspectiveController.resizeImageIcon(new ImageIcon((photoPath))));
+				DoctorPerspectiveView.docPhoto
+						.setIcon(DoctorPerspectiveController.resizeImageIcon(new ImageIcon((photoPath))));
 				Database.updateProfilePhotoPath(LoginController.loggedInEmail, photoPath);
 			}
 		});

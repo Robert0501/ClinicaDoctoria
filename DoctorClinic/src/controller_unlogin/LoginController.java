@@ -9,6 +9,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 
 import database.Database;
+import helper.PasswordAuthentication;
 import helper.ViewClass;
 import regex.RegEx;
 import view_doctor.DoctorPerspectiveView;
@@ -86,93 +87,101 @@ public class LoginController {
 
 	}
 
+	@SuppressWarnings("deprecation")
 	private void pacientLogin() {
-		if (!Database.checkIfUserIsDoctor(LoginView.getEmail())) {
-			if (checkEmptyEmail()) {
-				JOptionPane.showMessageDialog(null, "Username cannot be empty", "Alert", JOptionPane.ERROR_MESSAGE);
-			} else if (checkEmptyPassowrd()) {
-				JOptionPane.showMessageDialog(null, "Password cannot be empty", "Alert", JOptionPane.ERROR_MESSAGE);
-			} else if (Database.checkCredentials(LoginView.getEmail(), LoginView.getPassword())) {
-				if (!Database.checkActivatedAccount(LoginView.getEmail())) {
-					String code = JOptionPane.showInputDialog("Insert the activation code you recieved via email");
-					if (code.equals(String.valueOf(Database.getActivationCode(LoginView.getEmail())))) {
-						showPasswordBox();
-						while (!checkPassword()) {
+		try {
+			if (!Database.checkIfUserIsDoctor(LoginView.getEmail())) {
+				if (checkEmptyEmail()) {
+					JOptionPane.showMessageDialog(null, "Username cannot be empty", "Alert", JOptionPane.ERROR_MESSAGE);
+				} else if (checkEmptyPassowrd()) {
+					JOptionPane.showMessageDialog(null, "Password cannot be empty", "Alert", JOptionPane.ERROR_MESSAGE);
+				} else if (PasswordAuthentication.authenticate(LoginView.getPassword(),
+						Database.getPassword(LoginView.getEmail()))) {
+					if (!Database.checkActivatedAccount(LoginView.getEmail())) {
+						String code = JOptionPane.showInputDialog("Insert the activation code you recieved via email");
+						if (code.equals(String.valueOf(Database.getActivationCode(LoginView.getEmail())))) {
 							showPasswordBox();
+							while (!checkPassword()) {
+								showPasswordBox();
+							}
+							JOptionPane.showMessageDialog(null,
+									"Password has been successfully changed. You can login now",
+									"Password Changed Successfully", JOptionPane.INFORMATION_MESSAGE);
+							Database.setAccountTo(true, LoginView.getEmail());
+							Database.updatePassword(LoginView.getEmail(), newPassword.getText());
+						} else {
+							JOptionPane.showMessageDialog(null, "The code you provided is wrong", "Alert",
+									JOptionPane.ERROR_MESSAGE);
 						}
-						JOptionPane.showMessageDialog(null, "Password has been successfully changed. You can login now",
-								"Password Changed Successfully", JOptionPane.INFORMATION_MESSAGE);
-						Database.setAccountTo(true, LoginView.getEmail());
-						Database.updatePassword(LoginView.getEmail(), newPassword.getText());
 					} else {
-						JOptionPane.showMessageDialog(null, "The code you provided is wrong", "Alert",
-								JOptionPane.ERROR_MESSAGE);
+						JOptionPane.showMessageDialog(null, "Login successfully", "Login Successfully",
+								JOptionPane.INFORMATION_MESSAGE);
+						loggedInEmail = LoginView.getEmail();
+
+						LoginView.setVisibility(false);
+						LoginView.setEmail("");
+						LoginView.setPassword("");
+						ViewClass.patientPerspectiveRefresh();
+						new PatientPerspectiveView();
 					}
 				} else {
-					JOptionPane.showMessageDialog(null, "Login successfully", "Login Successfully",
-							JOptionPane.INFORMATION_MESSAGE);
-					loggedInEmail = LoginView.getEmail();
-					LoginView.setVisibility(false);
-					LoginView.setEmail("");
-					LoginView.setPassword("");
-					if (!ViewClass.patientView) {
-						new PatientPerspectiveView();
-						ViewClass.patientView = true;
-					} else {
-						PatientPerspectiveView.patientFrame.setVisible(true);
-					}
+					JOptionPane.showMessageDialog(null, "Username or password are wrong", "Alert",
+							JOptionPane.ERROR_MESSAGE);
 				}
-			} else {
-				JOptionPane.showMessageDialog(null, "Username or password are wrong", "Alert",
-						JOptionPane.ERROR_MESSAGE);
-			}
 
+			}
+		} catch (IllegalArgumentException e) {
+			JOptionPane.showMessageDialog(null, "Username or password are wrong", "Alert", JOptionPane.ERROR_MESSAGE);
 		}
 
 	}
 
+	@SuppressWarnings("deprecation")
 	private void doctorLogin() {
-		if (Database.checkIfUserIsDoctor(LoginView.getEmail())) {
-			if (checkEmptyEmail()) {
-				JOptionPane.showMessageDialog(null, "Username cannot be empty", "Alert", JOptionPane.ERROR_MESSAGE);
-			} else if (checkEmptyPassowrd()) {
-				JOptionPane.showMessageDialog(null, "Password cannot be empty", "Alert", JOptionPane.ERROR_MESSAGE);
-			} else if (Database.checkCredentials(LoginView.getEmail(), LoginView.getPassword())) {
-				if (!Database.checkActivatedAccount(LoginView.getEmail())) {
-					String code = JOptionPane.showInputDialog("Insert the activation code you recieved via email");
-					if (code.equals(String.valueOf(Database.getActivationCode(LoginView.getEmail())))) {
-						Database.setAccountTo(true, LoginView.getEmail());
-						JOptionPane.showMessageDialog(null, "Login successfully", "Login Successfully",
-								JOptionPane.INFORMATION_MESSAGE);
-						LoginView.setVisibility(false);
-						loggedInEmail = LoginView.getEmail();
-						if (!ViewClass.doctorView) {
+		try {
+			if (Database.checkIfUserIsDoctor(LoginView.getEmail())) {
+				if (checkEmptyEmail()) {
+					JOptionPane.showMessageDialog(null, "Username cannot be empty", "Alert", JOptionPane.ERROR_MESSAGE);
+				} else if (checkEmptyPassowrd()) {
+					JOptionPane.showMessageDialog(null, "Password cannot be empty", "Alert", JOptionPane.ERROR_MESSAGE);
+				} else if (PasswordAuthentication.authenticate(LoginView.getPassword(),
+						Database.getPassword(LoginView.getEmail()))) {
+					if (!Database.checkActivatedAccount(LoginView.getEmail())) {
+						String code = JOptionPane.showInputDialog("Insert the activation code you recieved via email");
+						if (code.equals(String.valueOf(Database.getActivationCode(LoginView.getEmail())))) {
+							Database.setAccountTo(true, LoginView.getEmail());
+							JOptionPane.showMessageDialog(null, "Login successfully", "Login Successfully",
+									JOptionPane.INFORMATION_MESSAGE);
+							LoginView.setVisibility(false);
+							loggedInEmail = LoginView.getEmail();
+							ViewClass.doctorPerspectiveRefresh();
+							System.out.println(
+									"Hashed password: " + PasswordAuthentication.hash(LoginView.getPassword()));
 							new DoctorPerspectiveView();
-							ViewClass.doctorView = true;
 						} else {
-							DoctorPerspectiveView.doctorFrame.setVisible(true);
+							JOptionPane.showMessageDialog(null, "The code you provided is wrong", "Alert",
+									JOptionPane.ERROR_MESSAGE);
 						}
 					} else {
-						JOptionPane.showMessageDialog(null, "The code you provided is wrong", "Alert",
-								JOptionPane.ERROR_MESSAGE);
+						JOptionPane.showMessageDialog(null, "Login successfully", "Login Successfully",
+								JOptionPane.INFORMATION_MESSAGE);
+						loggedInEmail = LoginView.getEmail();
+						LoginView.setVisibility(false);
+						String password = PasswordAuthentication.hash(LoginView.getPassword());
+						System.out.println("Hashed password: " + password);
+
+						System.out.println(PasswordAuthentication.authenticate(LoginView.getPassword(), password));
+						LoginView.setEmail("");
+						LoginView.setPassword("");
+						ViewClass.doctorPerspectiveRefresh();
+						new DoctorPerspectiveView();
 					}
 				} else {
-					JOptionPane.showMessageDialog(null, "Login successfully", "Login Successfully",
-							JOptionPane.INFORMATION_MESSAGE);
-					loggedInEmail = LoginView.getEmail();
-					LoginView.setVisibility(false);
-					LoginView.setEmail("");
-					LoginView.setPassword("");
-					if (!ViewClass.doctorView) {
-						new DoctorPerspectiveView();
-						ViewClass.doctorView = true;
-					} else {
-						DoctorPerspectiveView.doctorFrame.setVisible(true);
-						DoctorPerspectiveView.updateDataOnRelogin();
-					}
+					JOptionPane.showMessageDialog(null, "Username or password are wrong", "Alert",
+							JOptionPane.ERROR_MESSAGE);
 				}
 			}
-		} else {
+		} catch (IllegalArgumentException e) {
 			JOptionPane.showMessageDialog(null, "Username or password are wrong", "Alert", JOptionPane.ERROR_MESSAGE);
 		}
 

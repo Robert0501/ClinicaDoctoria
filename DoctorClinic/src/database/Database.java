@@ -9,36 +9,27 @@ import javax.swing.JOptionPane;
 
 import org.postgresql.util.PSQLException;
 
-import controller_doctor.NewPacientController;
 import controller_doctor.PacientDetailController;
-import controller_unlogin.LoginController;
 import document.WordDocument;
-import model.Doctor;
+import helper.PasswordAuthentication;
 import model.MedicalResults;
-import model.Pacient;
-import model.User;
+import model.Patient;
 import view_doctor.DoctorAppointmentsView;
 import view_doctor.DoctorMessagesView;
 import view_doctor.PacientView;
-import view_patient.PacientMessageView;
+import view_patient.PatientMessageView;
 import view_patient.PatientAppointmentsView;
 import view_patient.TestHistoryView;
 
 public class Database {
-	static Connection connection = null;
-	static Statement statement = null;
-	static ResultSet rs = null;
+	public static Connection connection = null;
+	public static Statement statement = null;
+	public static ResultSet rs = null;
 
 	public Database() {
 		connectDB();
-		createDoctorTable();
-		createUserTable();
-		createPasswordInfoTable();
-		createPacientTable();
-		createTestsTable();
-		createTestHistoryTable();
-		createAppointmentsTable();
-		createMessageTable();
+		new CreateDatabase();
+
 	}
 
 	private void connectDB() {
@@ -52,249 +43,6 @@ public class Database {
 			}
 
 			System.out.println("Connexion Estabilished");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	private void createDoctorTable() {
-		try {
-			statement = connection.createStatement();
-			String query = "CREATE TABLE Doctor(" + "first_name varchar(100) not null, "
-					+ "last_name varchar(100) not null, " + "email varchar(100) not null , "
-					+ "clinic_name varchar(50), " + "primary key(email) );";
-			statement.execute(query);
-			System.out.println("Doctor Table Created");
-		} catch (PSQLException e) {
-			System.out.println("Doctor Table is already created");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public static void insertIntoDoctorTABLE(Doctor doctor, String address) {
-		try {
-			statement = connection.createStatement();
-			String query = "INSERT INTO Doctor VALUES(" + "'" + doctor.getFirstName() + "'," + "'"
-					+ doctor.getLastName() + "','" + doctor.getEmail() + "','" + doctor.getClinicName() + "','"
-					+ address + "');";
-			statement.execute(query);
-		} catch (PSQLException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	private void createUserTable() {
-		try {
-			statement = connection.createStatement();
-			String query = "CREATE TABLE Users (" + "email varchar(100) not null, " + "password varchar(100) not null, "
-					+ "activation_code varchar(10) not null , "
-					+ "is_activated boolean not null, photoPath varchar(200)," + "primary key(email) );";
-			statement.execute(query);
-			System.out.println("User Table Created");
-		} catch (PSQLException e) {
-			System.out.println("User Table is already created");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public static void insertIntoUserTable(User user, boolean isDoctor) {
-		try {
-			statement = connection.createStatement();
-			String query = "INSERT INTO Users VALUES(" + "'" + user.getEmail() + "'," + "'" + user.getPassword() + "',"
-					+ "'" + user.getActivationCode() + "'," + "'" + false + "','" + isDoctor
-					+ "', 'src//Images//Icon//docPic.png" + "');";
-			statement.execute(query);
-		} catch (PSQLException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public static void createMessageTable() {
-		try {
-			statement = connection.createStatement();
-			String query = "CREATE TABLE Message (" + "email_from varchar(100)," + "email_to varchar(100),"
-					+ "subject varchar(100)," + "text varchar(10000)," + "sent_date varchar(12),"
-					+ "sent_hour varchar(12), patient_name text );";
-			statement.execute(query);
-			System.out.println("Message Table Created");
-		} catch (PSQLException e) {
-			System.out.println("Message Table is already created");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public static void insertIntoMessageTable(String from, String to, String subject, String text, String sentDate,
-			String sentHour, String patient_name) {
-		try {
-			statement = connection.createStatement();
-			String query = "INSERT INTO Message VALUES('" + from + "','" + to + "','" + subject + "','" + text + ""
-					+ "','" + sentDate + "','" + sentHour + "','" + patient_name + "');";
-			statement.execute(query);
-		} catch (PSQLException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void createTestsTable() {
-		try {
-			statement = connection.createStatement();
-			String query = "CREATE TABLE MedicalTest ("
-					+ "TA varchar(5), AV varchar(5), weight varchar(5), height varchar(5), imc varchar(5), circumference varchar(5),"
-					+ "glucose varchar(5), cholesterol varchar(5), LDL_C varchar(5), HDL_C varchar(5), triglicerides varchar(5),"
-					+ "potassium varchar(5), sodium varchar(5), uric_acid varchar(5), creatinine varchar(5), microalbuminuria varchar(5),"
-					+ "urinary_protein varchar(5), urinary_creatinine varchar(5), risk_factor varchar(7), cnp varchar(15)"
-					+ ");";
-			statement.execute(query);
-			System.out.println("MedicalTest Table Created");
-		} catch (PSQLException e) {
-			System.out.println("MedicalTest Table is already created");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public static void insertIntoMedicalTestTable(String TA, String AV, String weight, String height, String imc,
-			String circumference, String glucose, String cholesterol, String ldl_c, String hdl_c, String triglicerides,
-			String potassium, String sodium, String uric_acid, String creatinine, String microalbuminuria,
-			String urinary_protein, String urinary_creatinine, String risc_factor, String cnp) {
-		try {
-
-			statement = connection.createStatement();
-			String query = "INSERT INTO MedicalTest VALUES(" + "'" + TA + "','" + AV + "','" + weight + "','" + height
-					+ "','" + imc + "','" + circumference + "','" + glucose + "','" + cholesterol + "','" + ldl_c
-					+ "','" + hdl_c + "','" + triglicerides + "','" + potassium + "','" + sodium + "','" + uric_acid
-					+ "','" + creatinine + "','" + microalbuminuria + "','" + urinary_protein + "','"
-					+ urinary_creatinine + "','" + risc_factor + "','" + cnp + "');";
-			statement.execute(query);
-		} catch (PSQLException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void createPasswordInfoTable() {
-		try {
-			statement = connection.createStatement();
-			String query = "CREATE TABLE PasswordInfo (" + "email varchar(100) not null"
-					+ ",forgot_code varchar(10) not null, " + "forgot_flag boolean not null);";
-			statement.execute(query);
-			System.out.println("PasswordInfo Table Created");
-		} catch (PSQLException e) {
-			System.out.println("PasswordInfo Table is already created");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public static void insertIntoPasswordInfoTable(String email, String code) {
-		try {
-			statement = connection.createStatement();
-			String query = "INSERT INTO PasswordInfo VALUES(" + "'" + email + "'," + "'" + code + "'," + "'true');";
-			statement.execute(query);
-		} catch (PSQLException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public static void createTestHistoryTable() {
-		try {
-			statement = connection.createStatement();
-			String query = "CREATE TABLE TestHistory (patient_email varchar(100), doctor_email varchar(100), "
-					+ "test_result_path varchar(200),document_name varchar(200), test_date varchar(15), test_hour varchar(15) );";
-			statement.execute(query);
-			System.out.println("Test History Table Created");
-		} catch (PSQLException e) {
-			System.out.println("Test History Table is already created");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public static void insertIntoTestHistoryTable(String patient_email, String doctor_email, String path,
-			String documentName, String date, String hour) {
-		try {
-			statement = connection.createStatement();
-			String query = "INSERT INTO TestHistory VALUES( '" + patient_email + "','" + doctor_email + "','" + path
-					+ "','" + documentName + "','" + date + "','" + hour + "');";
-			statement.execute(query);
-		} catch (PSQLException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public static void createPacientTable() {
-		try {
-			statement = connection.createStatement();
-			String query = "CREATE TABLE Pacient (" + "first_name varchar(50)," + "last_name varchar(100),"
-					+ "CNP varchar(17)," + "Date_of_Birth varchar(12)," + "email varchar(100),"
-					+ "phone_number varchar (13)," + "country varchar(50)," + "address varchar(100),"
-					+ "doctor_email varchar(100), added_day text, added_month text, added_year text );";
-			statement.execute(query);
-			System.out.println("Pacient Table Created");
-		} catch (PSQLException e) {
-			System.out.println("Pacient Table is already created");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public static void insertIntoPacientTable(String firstName, String lastName, String cnp, String dob, String email,
-			String phone, String country, String address, String day, String month, String year) {
-		try {
-			statement = connection.createStatement();
-			String query = "INSERT INTO Pacient VALUES( '" + firstName + "','" + lastName + "','" + cnp + "','" + dob
-					+ "','" + email + "','" + phone + "','" + country + "','" + address + "','"
-					+ LoginController.loggedInEmail + "','" + day + "','" + month + "','" + year + "');";
-			statement.execute(query);
-		} catch (PSQLException e) {
-			JOptionPane.showMessageDialog(null, "There already is a pacient with this CNP", "Alert",
-					JOptionPane.ERROR_MESSAGE);
-			NewPacientController.pacientExist = true;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public static void createAppointmentsTable() {
-		try {
-			statement = connection.createStatement();
-			String query = "CREATE TABLE Appointments (" + "patient_email varchar(100)," + "patient_name varchar(100),"
-					+ "doctor_email varchar(100)," + "appointment_date varchar(50)," + "appointment_time varchar(50),"
-					+ "Reason varchar(200)," + "Status varchar(20) );";
-			statement.execute(query);
-			System.out.println("Appointments Table Created");
-		} catch (PSQLException e) {
-			System.out.println("Appointments Table is already created");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public static void insertIntoAppointmentsTable(String patient_email, String patient_name, String doctor_email,
-			String date, String hour, String reason) {
-		try {
-			statement = connection.createStatement();
-			String query = "INSERT INTO Appointments VALUES (" + "'" + patient_email + "','" + patient_name + "','"
-					+ doctor_email + "','" + date + "','" + hour + "','" + reason + "','" + "Pending');";
-			statement.execute(query);
-		} catch (PSQLException e) {
-			JOptionPane.showMessageDialog(null, "There already is a pacient with this CNP", "Alert",
-					JOptionPane.ERROR_MESSAGE);
-			NewPacientController.pacientExist = true;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -318,8 +66,8 @@ public class Database {
 	public static boolean checkCredentials(String email, String password) {
 		try {
 			statement = connection.createStatement();
-			String query = "SELECT email, password FROM Users WHERE email = '" + email + "' AND password = '" + password
-					+ "';";
+			String query = "SELECT email, password FROM Users WHERE email = '" + email + "' AND password = '"
+					+ PasswordAuthentication.hash(password) + "';";
 			rs = statement.executeQuery(query);
 			while (rs.next()) {
 				return true;
@@ -329,6 +77,21 @@ public class Database {
 		}
 
 		return false;
+	}
+
+	public static String getPassword(String email) {
+		try {
+			statement = connection.createStatement();
+			String query = "SELECT password FROM Users WHERE email = '" + email + "';";
+			rs = statement.executeQuery(query);
+			while (rs.next()) {
+				return rs.getString("password");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return "";
 	}
 
 	public static int getActivationCode(String email) {
@@ -385,6 +148,34 @@ public class Database {
 			rs = statement.executeQuery(query);
 			while (rs.next()) {
 				System.out.println(rs.getString("test_result_path"));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public static String getPatientPhoneNumber(String email) {
+		try {
+			statement = connection.createStatement();
+			String query = "SELECT phone_number FROM Pacient WHERE email = '" + email + "';";
+			rs = statement.executeQuery(query);
+			while (rs.next()) {
+				return (rs.getString("phone_number"));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public static String getPatientAddress(String email) {
+		try {
+			statement = connection.createStatement();
+			String query = "SELECT country, address FROM Pacient WHERE email = '" + email + "';";
+			rs = statement.executeQuery(query);
+			while (rs.next()) {
+				return (rs.getString("country") + " " + rs.getString("address"));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -523,7 +314,7 @@ public class Database {
 			String query = "SELECT * FROM message WHERE email_to = '" + email + "' OR email_from = '" + email + "';";
 			rs = statement.executeQuery(query);
 			while (rs.next()) {
-				PacientMessageView.model.addRow(new Object[] { rs.getString("sent_date"), rs.getString("sent_hour"),
+				PatientMessageView.model.addRow(new Object[] { rs.getString("sent_date"), rs.getString("sent_hour"),
 						rs.getString("email_from"), rs.getString("patient_name"), rs.getString("subject") });
 
 			}
@@ -752,13 +543,13 @@ public class Database {
 		return null;
 	}
 
-	public static Pacient getPacientDetails(String cnp) {
+	public static Patient getPacientDetails(String cnp) {
 		try {
 			statement = connection.createStatement();
 			String query = "Select * from pacient where cnp = '" + cnp + "';";
 			rs = statement.executeQuery(query);
 			while (rs.next()) {
-				return new Pacient(rs.getString("first_name"), rs.getString("last_name"), rs.getString("cnp"),
+				return new Patient(rs.getString("first_name"), rs.getString("last_name"), rs.getString("cnp"),
 						rs.getString("date_of_birth"), rs.getString("phone_number"), rs.getString("email"),
 						rs.getString("country"), rs.getString("address"));
 			}
@@ -844,6 +635,24 @@ public class Database {
 		return null;
 	}
 
+	public static String getPatientNumber(String email, String day, String month, String year) {
+		try {
+			statement = connection.createStatement();
+			String query = "SELECT COUNT(CNP) FROM Pacient WHERE doctor_email = '" + email + "' AND added_month = '"
+					+ month + "' AND added_year = '" + year + "' AND added_day = '" + day + "';";
+			rs = statement.executeQuery(query);
+			while (rs.next()) {
+				System.out.println("month = " + month + " day = " + day + " year = " + year);
+				System.out.println(rs.getString("count"));
+				return rs.getString("count");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
 	public static String getPatientNumberWeekly(String email, String day, String month, String year) {
 		try {
 			statement = connection.createStatement();
@@ -920,6 +729,18 @@ public class Database {
 		}
 	}
 
+	public static void updatePatientAddress(String email, String address) {
+		try {
+			statement = connection.createStatement();
+			String query = "UPDATE Pacient SET address = '" + address + "' WHERE email = '" + email + "';";
+			statement.execute(query);
+		} catch (PSQLException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	public static void updateMedicalResults(String cnp, MedicalResults mr) {
 		try {
 			statement = connection.createStatement();
@@ -939,6 +760,22 @@ public class Database {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	public static boolean checkTimeForAppointment(String date, String time, String doctorEmail) {
+		try {
+			statement = connection.createStatement();
+			String query = "SELECT * FROM Appointments WHERE appointment_date = '" + date + "' AND appointment_time = '"
+					+ time + "' AND doctor_email = '" + doctorEmail + "';";
+			rs = statement.executeQuery(query);
+			while (rs.next()) {
+				return true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return false;
 	}
 
 	public static int getForgotPasswordCode(String email) {
@@ -972,7 +809,8 @@ public class Database {
 	public static void updatePassword(String email, String password) {
 		try {
 			statement = connection.createStatement();
-			String query = "UPDATE Users SET password = '" + password + "' WHERE email = '" + email + "';";
+			String query = "UPDATE Users SET password = '" + PasswordAuthentication.hash(password) + "' WHERE email = '"
+					+ email + "';";
 			statement.execute(query);
 		} catch (PSQLException e) {
 			e.printStackTrace();
@@ -986,6 +824,18 @@ public class Database {
 			statement = connection.createStatement();
 			String query = "UPDATE Doctor SET first_name = '" + firstName + "' , last_name = '" + lastName
 					+ "' WHERE email = '" + email + "';";
+			statement.execute(query);
+		} catch (PSQLException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void updatePhoneNumber(String email, String phone_number) {
+		try {
+			statement = connection.createStatement();
+			String query = "UPDATE Pacient SET phone_number = '" + phone_number + "' WHERE email = '" + email + "';";
 			statement.execute(query);
 		} catch (PSQLException e) {
 			e.printStackTrace();

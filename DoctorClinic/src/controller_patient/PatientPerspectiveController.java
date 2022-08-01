@@ -9,9 +9,10 @@ import controller_unlogin.LoginController;
 import database.Database;
 import helper.ViewClass;
 import view_patient.ContactDoctorView;
-import view_patient.PacientMessageView;
 import view_patient.PatientAppointmentsView;
+import view_patient.PatientMessageView;
 import view_patient.PatientPerspectiveView;
+import view_patient.PatientProfileView;
 import view_patient.TestHistoryView;
 import view_unlogin.LoginView;
 
@@ -24,6 +25,7 @@ public class PatientPerspectiveController {
 		historyPage();
 		appointmentsPage();
 		messagesPage();
+		profilePage();
 
 		logout();
 	}
@@ -93,13 +95,28 @@ public class PatientPerspectiveController {
 			public void mouseClicked(MouseEvent e) {
 				if (!ViewClass.patientMessageView) {
 					ViewClass.setPatientViewsOnFalse();
-					new PacientMessageView();
+					new PatientMessageView();
 					ViewClass.patientMessageView = true;
 				} else {
 					ViewClass.setPatientViewsOnFalse();
-					PacientMessageView.model.setRowCount(0);
+					PatientMessageView.model.setRowCount(0);
 					Database.showPatientEmails(LoginController.loggedInEmail);
-					PacientMessageView.messagePanel.setVisible(true);
+					PatientMessageView.messagePanel.setVisible(true);
+				}
+			}
+		});
+	}
+
+	private void profilePage() {
+		PatientPerspectiveView.profileButton.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				if (!ViewClass.patientProfileView) {
+					ViewClass.setPatientViewsOnFalse();
+					new PatientProfileView();
+					ViewClass.patientProfileView = true;
+				} else {
+					ViewClass.setPatientViewsOnFalse();
+					PatientProfileView.profilePanel.setVisible(true);
 				}
 			}
 		});

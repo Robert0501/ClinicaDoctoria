@@ -17,7 +17,6 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
-import controller_patient.PatientEmailSenderController;
 import database.Database;
 import document.WordDocument;
 import view_doctor.DoctorEmailSenderView;
@@ -175,16 +174,21 @@ public class Email {
 			message.setFrom(new InternetAddress(myAccountEmail));
 			message.setRecipient(Message.RecipientType.TO, new InternetAddress(recepient));
 			message.setSubject("Test Results");
-			message.setText("Hello, " + PacientDetailView.firstNameIn.getText() + " "
+
+			MimeBodyPart attachment = new MimeBodyPart();
+			MimeBodyPart textBodyPart = new MimeBodyPart();
+			Multipart multipart = new MimeMultipart();
+
+			textBodyPart.setText("Hello, " + PacientDetailView.firstNameIn.getText() + " "
 					+ PacientDetailView.lastNameIn.getText() + ",\n"
 					+ "You can find your test results attached in this email.\nHave a nice day\nClinica Doctoria team");
-			MimeBodyPart attachment = new MimeBodyPart();
+
 			String filename = WordDocument.path + WordDocument.name + ".pdf";
 			DataSource source = new FileDataSource(filename);
 			attachment.setDataHandler(new DataHandler(source));
 			attachment.setFileName(WordDocument.name + ".pdf");
 
-			Multipart multipart = new MimeMultipart();
+			multipart.addBodyPart(textBodyPart);
 			multipart.addBodyPart(attachment);
 			message.setContent(multipart);
 

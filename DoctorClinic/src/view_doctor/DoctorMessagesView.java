@@ -47,7 +47,7 @@ public class DoctorMessagesView {
 	private void messagePanel() {
 		messagePanel = new JPanel();
 		messagePanel.setLayout(new FlowLayout());
-		messagePanel.setVisible(false);
+		messagePanel.setVisible(true);
 		messagePanel.setBackground(Color.LIGHT_GRAY);
 		messagePanel.setBorder(BorderFactory.createLineBorder(Color.black, 2));
 		DoctorPerspectiveView.doctorFrame.add(messagePanel);
